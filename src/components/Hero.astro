@@ -1,0 +1,22 @@
+---
+import { cn } from "@/utils/utils";
+import { AnimatedGridPattern } from "@/components/shadcn/AnimatedGridPattern";
+---
+
+<section class="relative h-screen w-full z-0">
+    <AnimatedGridPattern
+    numSquares={90}
+    maxOpacity={0.1}
+    duration={2}
+    repeatDelay={1}
+    class:list="[mask-image:radial-gradient(1000px_at_center,white,transparent)]"
+    client:load/>
+
+<div class="h-1/2"/>
+   <article class="relative z-20">
+    <h1 class="text-4xl font-bold">Leading you to success with your own light!</h1>
+    <p class="text-lg">We are a team of experts who are dedicated to helping you achieve your goals.</p>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-md">Get Started</button>
+   </article>
+</section>
+

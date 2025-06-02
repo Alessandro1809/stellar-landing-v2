@@ -1,0 +1,62 @@
+---
+interface Props {
+    width?: number
+    height?: number
+}
+
+const { width = 70, height = 70 } = Astro.props
+---
+
+<svg class="animate" width={width} height={height} viewBox="0 0 1330 3524" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 2889.76V1385.68C1 1289.41 123.697 1248.74 181.201 1325.95L201.449 1353.14C253.767 1423.39 364.711 1397.2 380.095 1310.97L520.99 521.295C540.401 412.503 695.905 410.935 717.507 519.313L974.066 1806.52C990.787 1890.41 1101.75 1910.2 1146.44 1837.26C1196.68 1755.27 1323.05 1792.65 1320.6 1888.77L1295 2897L1286 2965L1268 3065L1245.5 3146.5L1222.25 3200.18C1219.43 3206.71 1215.91 3212.91 1211.77 3218.7L1175 3270L1138.77 3317.73C1134.6 3323.23 1129.87 3328.28 1124.66 3332.8L1079.5 3372L1021 3416L969.484 3451.8C964.505 3455.26 959.222 3458.26 953.7 3460.76L892.5 3488.5L844.301 3507.7C837.124 3510.56 829.641 3512.57 822.001 3513.71L766.811 3521.91C761.944 3522.64 757.029 3523 752.108 3523H682H614L524.248 3513.03C518.096 3512.34 512.021 3511.09 506.101 3509.28L438 3488.5L352.148 3449.84C345.734 3446.96 339.643 3443.4 333.975 3439.23L267 3390L196.094 3332.56C190.713 3328.2 185.799 3323.29 181.431 3317.92L142.5 3270L78 3167L51 3107.5L26.5 3030L12.5 2976L2.04298 2904.16C1.34857 2899.39 1 2894.58 1 2889.76Z" fill="url(#paint0_linear_156_20)" stroke="black"/>
+    <ellipse cx="666" cy="2871" rx="435" ry="445" fill="#D9D9D9"/>
+    <ellipse class="circle" cx="889" cy="2736.5" rx="140" ry="134.5" fill="black"/>
+      <ellipse class="circle" cx="728" cy="3024" rx="75" ry="79" fill="black"/>
+      <ellipse class="circle" cx="547" cy="2764.5" rx="106" ry="106.5" fill="black"/>
+    <defs>
+    <linearGradient id="paint0_linear_156_20" x1="665.25" y1="360" x2="665.25" y2="3523" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#000B27"/>
+    <stop offset="0.665" stop-color="#2450A5"/>
+    <stop offset="1" stop-color="#6AACDE"/>
+    </linearGradient>
+    </defs>
+    </svg>
+
+<style>
+    @keyframes moveUpDown {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .animate {
+      animation: moveUpDown 2.5s infinite;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .animate {
+      animation: moveUpDown 3s infinite;
+    }
+
+    .rotating {
+      animation: rotate 4s linear infinite;
+      transform-origin: center;
+    }
+
+    .circle {
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+
+</style>

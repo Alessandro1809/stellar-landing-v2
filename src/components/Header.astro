@@ -1,0 +1,121 @@
+---
+import { Image } from "astro:assets";
+import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
+---
+
+<header 
+  id="main-header" 
+  class="fixed top-0 left-0 w-full z-50"
+>
+  <div class="container mx-auto px-4 py-4">
+    <nav class="flex items-center justify-between">
+      <a 
+        href="/" 
+        class="flex items-center gap-2" 
+        aria-label="Go to homepage"
+      >
+        <StellarAnimatedIcon />
+      </a>
+
+      <!-- Menú desktop -->
+      <div class="hidden md:flex items-center gap-8 text-white">
+        <a href="/projects" class="hover:opacity-75 transition-opacity">Projects</a>
+        <a href="/about" class="hover:opacity-75 transition-opacity">About</a>
+        <a href="/services" class="hover:opacity-75 transition-opacity">Servicios</a>
+        <a href="/contact" class="hover:opacity-75 transition-opacity">Contact</a>
+      </div>
+
+      <a 
+        href="/pricing" 
+        class="hidden md:block text-white hover:opacity-75 transition-opacity  border-primary-yellow border-2 rounded-full px-6 py-1 text-sm"
+      >
+        Pricing
+      </a>
+
+      <!-- Menú móvil toggle -->
+      <button 
+        id="mobile-menu-btn" 
+        class="md:hidden text-white p-2"
+        aria-label="Toggle menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Menú móvil overlay -->
+<div 
+  id="mobile-menu-overlay"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden z-40"
+>
+</div>
+
+<!-- Menú móvil drawer -->
+<div 
+  id="mobile-menu" 
+  class="fixed left-0 right-0 bottom-0 w-full h-[50vh] bg-black/95 backdrop-blur-lg translate-y-full transition-transform duration-300 md:hidden rounded-t-3xl shadow-lg z-50"
+>
+  <div class="relative w-full h-full px-6 pt-8 pb-safe">
+    <!-- Línea decorativa en la parte superior -->
+    <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/20 rounded-full"></div>
+
+    <!-- Links del menú -->
+    <div class="flex flex-col items-center gap-6 mt-6">
+      <a href="/projects" class="text-white hover:opacity-75 transition-opacity">Projects</a>
+      <a href="/about" class="text-white hover:opacity-75 transition-opacity">About</a>
+      <a href="/services" class="text-white hover:opacity-75 transition-opacity">Servicios</a>
+      <a href="/contact" class="text-white hover:opacity-75 transition-opacity">Contact</a>
+      <a href="/pricing" class="text-white hover:opacity-75 transition-opacity border-primary-yellow border-2 rounded-full px-4 py-2">Pricing</a>
+    </div>
+
+    <!-- Botón de cerrar -->
+    <button 
+      id="close-menu-btn"
+      class="absolute top-4 right-4 text-white hover:opacity-75 transition-opacity p-2"
+      aria-label="Close menu"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const closeMenuBtn = document.getElementById('close-menu-btn');
+  
+  function openMobileMenu() {
+    mobileMenu?.classList.remove('translate-y-full');
+    mobileMenuOverlay?.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function closeMobileMenu() {
+    mobileMenu?.classList.add('translate-y-full');
+    mobileMenuOverlay?.classList.add('opacity-0', 'pointer-events-none');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  mobileMenuBtn?.addEventListener('click', openMobileMenu);
+  closeMenuBtn?.addEventListener('click', closeMobileMenu);
+  mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+</script>
+
+<style>
+  /* Soporte para el notch en iOS */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+
+  /* Prevenir scroll cuando el menú móvil está abierto */
+  body.overflow-hidden {
+    overflow: hidden;
+  }
+</style>
+  
