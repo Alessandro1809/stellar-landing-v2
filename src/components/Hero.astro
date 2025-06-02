@@ -1,22 +1,118 @@
 ---
-import { cn } from "@/utils/utils";
-import { AnimatedGridPattern } from "@/components/shadcn/AnimatedGridPattern";
+import { Image } from "astro:assets";
+import HeroLogo from "../assets/HeroLogo.svg";
 ---
 
-<section class="relative h-screen w-full z-0">
-    <AnimatedGridPattern
-    numSquares={90}
-    maxOpacity={0.1}
-    duration={2}
-    repeatDelay={1}
-    class:list="[mask-image:radial-gradient(1000px_at_center,white,transparent)]"
-    client:load/>
+<div class="relative w-full h-screen overflow-hidden">
+  <div class="grid-container">
+    <!-- Columna de texto -->
+    <div class="content-area">
+      <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+        Leading you to success with your own light!
+      </h1>
+      <p class="text-lg md:text-xl text-gray-200 mb-8">
+        Ready to take your business to the next level? We have modern and high quality solutions in consulting, marketing, web development and more
+      </p>
+      <div class="flex gap-4 flex-wrap">
+        <a 
+          href="#contact" 
+          class="px-6 py-3 bg-primary-yellow text-theme-deepblue font-semibold rounded-full hover:bg-primary-yellow/90 transition-colors"
+        >
+          Habla con nosotros
+        </a>
+        <a 
+          href="#services" 
+          class="px-6 py-3 border-2 border-primary-yellow text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
+        >
+          Explora nuestros planes
+        </a>
+      </div>
+    </div>
 
-<div class="h-1/2"/>
-   <article class="relative z-20">
-    <h1 class="text-4xl font-bold">Leading you to success with your own light!</h1>
-    <p class="text-lg">We are a team of experts who are dedicated to helping you achieve your goals.</p>
-    <button class="bg-blue-500 text-white px-4 py-2 rounded-md">Get Started</button>
-   </article>
-</section>
+    <!-- Columna del logo -->
+    <div class="logo-area">
+      <div class="animated-gradient">
+        <Image 
+          src={HeroLogo} 
+          alt="Stellar Logo" 
+          class="w-full max-w-md relative z-10"
+          width={500}
+          height={500}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+    height: 100vh;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .content-area {
+    grid-column: 2 / 7;
+    align-self: center;
+  }
+
+  .logo-area {
+    grid-column: 7 / 12;
+    align-self: center;
+    justify-self: end;
+  }
+
+  .animated-gradient {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .animated-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    background: linear-gradient(
+      25deg,
+      #244fa54b,
+      #0b1a3e46,
+      #244fa559,
+      #0b1a3e9d
+    );
+    background-size: 400% 400%;
+    animation: gradient 7s ease infinite;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    filter: blur(24px);
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+    50% {
+      background-position: 70% 50%;
+      border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
+    }
+    100% {
+      background-position: 0% 50%;
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .content-area {
+      grid-column: 2 / 12;
+    }
+
+    .logo-area {
+      display: none;
+    }
+  }
+</style>
+
+
 
