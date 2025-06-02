@@ -1,9 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import HeroLogo from "../assets/HeroLogo.svg";
+import Button from "./ui/Button.astro";
 ---
 
-<div class="relative w-full h-screen overflow-hidden">
+<div class="relative w-full h-full mt-20 md:mt-0">
   <div class="grid-container">
     <!-- Columna de texto -->
     <div class="content-area">
@@ -14,23 +15,23 @@ import HeroLogo from "../assets/HeroLogo.svg";
         Ready to take your business to the next level? We have modern and high quality solutions in consulting, marketing, web development and more
       </p>
       <div class="flex gap-4 flex-wrap">
-        <a 
+        <Button 
           href="#contact" 
-          class="px-6 py-3 bg-primary-yellow text-theme-deepblue font-semibold rounded-full hover:bg-primary-yellow/90 transition-colors"
+          variant="primary"
         >
-          Habla con nosotros
-        </a>
-        <a 
+          Habla con   nosotros
+        </Button>
+        <Button 
           href="#services" 
-          class="px-6 py-3 border-2 border-primary-yellow text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
+          variant="secondary"
         >
           Explora nuestros planes
-        </a>
+        </Button>
       </div>
     </div>
 
     <!-- Columna del logo -->
-    <div class="logo-area">
+    <div class="logo-area z-10">
       <div class="animated-gradient">
         <Image 
           src={HeroLogo} 
@@ -42,6 +43,8 @@ import HeroLogo from "../assets/HeroLogo.svg";
       </div>
     </div>
   </div>
+
+ 
 </div>
 
 <style>
@@ -52,11 +55,11 @@ import HeroLogo from "../assets/HeroLogo.svg";
     height: 100vh;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
   .content-area {
-    grid-column: 2 / 7;
+    grid-column: 1 / 7;
     align-self: center;
   }
 
@@ -82,6 +85,7 @@ import HeroLogo from "../assets/HeroLogo.svg";
       #244fa559,
       #0b1a3e9d
     );
+    
     background-size: 400% 400%;
     animation: gradient 7s ease infinite;
     border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
@@ -104,12 +108,30 @@ import HeroLogo from "../assets/HeroLogo.svg";
   }
 
   @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      gap: 2rem;
+      padding: 1rem;
+      height: auto;
+      min-height: 100vh;
+    }
+
     .content-area {
-      grid-column: 2 / 12;
+      grid-column: 1 / -1;
+      text-align: center;
     }
 
     .logo-area {
-      display: none;
+      grid-column: 1 / -1;
+      display: block;
+      justify-self: center;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .flex {
+      justify-content: center;
     }
   }
 </style>

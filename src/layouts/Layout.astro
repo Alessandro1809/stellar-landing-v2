@@ -15,7 +15,7 @@ import "@/styles/global.css";
 		<title>Stellar consultants</title>
 	</head>
 	<body class="bg-theme-deepblue relative">
-		<div class="absolute inset-0 mask-radial-gradient h-screen">
+		<div class="absolute inset-0 mask-radial-gradient h-[dvh] z-[-10]">
 			<AnimatedGridPattern
 				numSquares={90}
 				maxOpacity={0.1}
@@ -23,9 +23,11 @@ import "@/styles/global.css";
 				repeatDelay={1}
 				client:load
 			/>
+			
 		</div>
+		
 		<Header />
-		<main class="container mx-auto max-w-14xl text-theme-white">
+		<main class="container mx-auto max-w-7xl text-theme-white overflow-x-hidden px-4">
 			<slot />
 		</main>
 		<Footer />

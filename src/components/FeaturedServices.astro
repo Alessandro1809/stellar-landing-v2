@@ -1,2 +1,21 @@
-<div>
-</div> 
+---
+import { Image } from "astro:assets";
+import { ServicesMarquee } from "@/components/ServicesMarquee";
+---
+
+<section class="bg-gradient-to-b from-theme-deepblue/50 to-theme-deepblue">
+  <!-- Curva decorativa superior -->
+
+  <div class=" py-20">
+    <h2 class="text-4xl md:text-5xl font-bold mb-12">
+      <span class="text-white">Featured</span>
+      <span class="text-primary-cyan">Services</span>
+    </h2>
+
+    <ServicesMarquee client:load />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Contenido de servicios se agregará aquí -->
+    </div>
+  </div>
+</section>
+

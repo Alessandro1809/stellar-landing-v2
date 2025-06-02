@@ -1,42 +1,53 @@
 ---
-import { Image } from "astro:assets";
+import Button from "@/components/ui/Button.astro";
 import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 ---
 
 <header 
   id="main-header" 
-  class="fixed top-0 left-0 w-full z-50"
+  class="fixed top-0 left-0 w-full z-[2000] py-4"
 >
-  <div class="container mx-auto px-4 py-4">
-    <nav class="flex items-center justify-between">
+  <div class="container mx-auto px-4">
+    <nav class="flex items-center justify-between transition-all duration-300 ease-in-out" id="main-nav">
+      <!-- Logo -->
       <a 
         href="/" 
-        class="flex items-center gap-2" 
+        class="flex items-center gap-2 relative z-10" 
         aria-label="Go to homepage"
       >
         <StellarAnimatedIcon />
       </a>
 
-      <!-- Menú desktop -->
-      <div class="hidden md:flex items-center gap-8 text-white">
-        <a href="/projects" class="hover:opacity-75 transition-opacity">Projects</a>
-        <a href="/about" class="hover:opacity-75 transition-opacity">About</a>
-        <a href="/services" class="hover:opacity-75 transition-opacity">Servicios</a>
-        <a href="/contact" class="hover:opacity-75 transition-opacity">Contact</a>
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-8">
+        <div class="nav-blur-container transition-all duration-300 ease-in-out rounded-2xl px-6 py-3">
+          <div class="nav-blur-effect"></div>
+          <ul class="flex gap-8 relative z-[2]">
+            <li><a href="/projects" class="nav-link">Projects</a></li>
+            <li><a href="/about" class="nav-link">About</a></li>
+            <li><a href="/services" class="nav-link">Servicios</a></li>
+            <li><a href="/contact" class="nav-link">Contact</a></li>
+          </ul>
+        </div>
       </div>
 
-      <a 
-        href="/pricing" 
-        class="hidden md:block text-white hover:opacity-75 transition-opacity  border-primary-yellow border-2 rounded-full px-6 py-1 text-sm"
-      >
-        Pricing
-      </a>
+      <!-- CTA Button -->
+      <div class="hidden md:block relative z-10">
+        <Button 
+          href="#services" 
+          variant="secondary"
+        >
+          Pricing
+        </Button>
+      </div>
 
-      <!-- Menú móvil toggle -->
+      <!-- Mobile Menu Button -->
       <button 
         id="mobile-menu-btn" 
         class="md:hidden text-white p-2"
         aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -46,32 +57,41 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
   </div>
 </header>
 
-<!-- Menú móvil overlay -->
+<!-- Mobile Menu Overlay -->
 <div 
   id="mobile-menu-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden z-40"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden z-[40]"
+  aria-hidden="true"
 >
 </div>
 
-<!-- Menú móvil drawer -->
-<div 
+<!-- Mobile Menu -->
+<nav 
   id="mobile-menu" 
-  class="fixed left-0 right-0 bottom-0 w-full h-[50vh] bg-black/95 backdrop-blur-lg translate-y-full transition-transform duration-300 md:hidden rounded-t-3xl shadow-lg z-50"
+  class="fixed left-0 right-0 bottom-0 w-full h-[50vh] bg-black/95 backdrop-blur-lg translate-y-full transition-transform duration-300 md:hidden rounded-t-3xl shadow-lg z-[100]"
+  aria-label="Mobile navigation"
 >
   <div class="relative w-full h-full px-6 pt-8 pb-safe">
-    <!-- Línea decorativa en la parte superior -->
+    <!-- Decorative Line -->
     <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/20 rounded-full"></div>
 
-    <!-- Links del menú -->
-    <div class="flex flex-col items-center gap-6 mt-6">
-      <a href="/projects" class="text-white hover:opacity-75 transition-opacity">Projects</a>
-      <a href="/about" class="text-white hover:opacity-75 transition-opacity">About</a>
-      <a href="/services" class="text-white hover:opacity-75 transition-opacity">Servicios</a>
-      <a href="/contact" class="text-white hover:opacity-75 transition-opacity">Contact</a>
-      <a href="/pricing" class="text-white hover:opacity-75 transition-opacity border-primary-yellow border-2 rounded-full px-4 py-2">Pricing</a>
-    </div>
+    <!-- Mobile Navigation Links -->
+    <ul class="flex flex-col items-center gap-6 mt-6">
+      <li><a href="/projects" class="text-white hover:opacity-75 transition-opacity">Projects</a></li>
+      <li><a href="/about" class="text-white hover:opacity-75 transition-opacity">About</a></li>
+      <li><a href="/services" class="text-white hover:opacity-75 transition-opacity">Servicios</a></li>
+      <li><a href="/contact" class="text-white hover:opacity-75 transition-opacity">Contact</a></li>
+      <li>
+        <Button 
+          href="#services" 
+          variant="secondary"
+        >
+          Pricing
+        </Button>
+      </li>
+    </ul>
 
-    <!-- Botón de cerrar -->
+    <!-- Close Button -->
     <button 
       id="close-menu-btn"
       class="absolute top-4 right-4 text-white hover:opacity-75 transition-opacity p-2"
@@ -82,40 +102,168 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
       </svg>
     </button>
   </div>
-</div>
-
-<script>
-  const mobileMenu = document.getElementById('mobile-menu');
-  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const closeMenuBtn = document.getElementById('close-menu-btn');
-  
-  function openMobileMenu() {
-    mobileMenu?.classList.remove('translate-y-full');
-    mobileMenuOverlay?.classList.remove('opacity-0', 'pointer-events-none');
-    document.body.classList.add('overflow-hidden');
-  }
-
-  function closeMobileMenu() {
-    mobileMenu?.classList.add('translate-y-full');
-    mobileMenuOverlay?.classList.add('opacity-0', 'pointer-events-none');
-    document.body.classList.remove('overflow-hidden');
-  }
-
-  mobileMenuBtn?.addEventListener('click', openMobileMenu);
-  closeMenuBtn?.addEventListener('click', closeMobileMenu);
-  mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
-</script>
+</nav>
 
 <style>
-  /* Soporte para el notch en iOS */
+  .nav-blur-container {
+    background: rgba(11, 26, 62, 0);
+    border: 1px solid rgba(255, 255, 255, 0);
+    will-change: backdrop-filter, background-color, border-color;
+    position: relative;
+  }
+
+  #main-nav.scrolled .nav-blur-container {
+    background: rgba(11, 26, 62, 0.774);
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-blur-effect {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 1rem;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+      10deg,
+      transparent,
+      rgba(36, 79, 165, 0.548),
+      rgba(255, 255, 255, 0.164),
+      rgba(36, 79, 165, 0.521),
+      transparent
+    );
+    filter: blur(20px);
+    transition: opacity 300ms ease-in-out;
+  }
+
+  #main-nav.scrolled .nav-blur-effect {
+    opacity: 1;
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  .nav-link {
+    color: white;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { filter: blur(20px) brightness(1); }
+    50% { filter: blur(25px) brightness(1.2); }
+  }
+
+  /* iOS safe area support */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 1rem);
   }
 
-  /* Prevenir scroll cuando el menú móvil está abierto */
-  body.overflow-hidden {
-    overflow: hidden;
+  #main-header {
+    will-change: backdrop-filter, background-color, border-bottom;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(11, 26, 62, 0);
+    border-bottom: 1px solid rgba(255, 255, 255, 0);
+    @media (max-width: 768px) {
+      &.scrolled {
+        background: rgba(11, 26, 62, 0.541);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+    }
   }
 </style>
+
+<script>
+  class HeaderController {
+    private header: HTMLElement | null;
+    private mainHeader: HTMLElement | null;
+    private mobileMenu: HTMLElement | null;
+    private mobileMenuBtn: HTMLElement | null;
+    private closeMenuBtn: HTMLElement | null;
+    private overlay: HTMLElement | null;
+    private scrollThreshold: number;
+    private isMobile: boolean;
+
+    constructor() {
+      this.header = document.querySelector('#main-nav');
+      this.mainHeader = document.querySelector('#main-header');
+      this.mobileMenu = document.querySelector('#mobile-menu');
+      this.mobileMenuBtn = document.querySelector('#mobile-menu-btn');
+      this.closeMenuBtn = document.querySelector('#close-menu-btn');
+      this.overlay = document.querySelector('#mobile-menu-overlay');
+      this.scrollThreshold = 50;
+      this.isMobile = window.innerWidth < 768;
+
+      this.init();
+    }
+
+    init() {
+      this.setupScrollHandler();
+      this.setupMobileMenuHandlers();
+      this.setupResizeHandler();
+    }
+
+    setupResizeHandler() {
+      window.addEventListener('resize', () => {
+        requestAnimationFrame(() => {
+          const wasMobile = this.isMobile;
+          this.isMobile = window.innerWidth < 768;
+          
+          // Si cambió de móvil a desktop, asegurarse de quitar la clase scrolled del header
+          if (wasMobile && !this.isMobile) {
+            this.mainHeader?.classList.remove('scrolled');
+          }
+          // Si cambió de desktop a móvil y hay scroll, añadir la clase
+          else if (!wasMobile && this.isMobile && window.scrollY > this.scrollThreshold) {
+            this.mainHeader?.classList.add('scrolled');
+          }
+        });
+      });
+    }
+
+    setupScrollHandler() {
+      window.addEventListener('scroll', () => {
+        requestAnimationFrame(() => {
+          const shouldShowEffect = window.scrollY > this.scrollThreshold;
+          this.header?.classList.toggle('scrolled', shouldShowEffect);
+          if (this.isMobile) {
+            this.mainHeader?.classList.toggle('scrolled', shouldShowEffect);
+          }
+        });
+      });
+    }
+
+    setupMobileMenuHandlers() {
+      this.mobileMenuBtn?.addEventListener('click', () => this.toggleMobileMenu(true));
+      this.closeMenuBtn?.addEventListener('click', () => this.toggleMobileMenu(false));
+      this.overlay?.addEventListener('click', () => this.toggleMobileMenu(false));
+    }
+
+    toggleMobileMenu(show: boolean) {
+      if (!this.mobileMenu || !this.overlay || !this.mobileMenuBtn || !this.mainHeader) return;
+
+      this.mobileMenu.classList.toggle('translate-y-full', !show);
+      this.overlay.classList.toggle('opacity-0', !show);
+      this.overlay.classList.toggle('pointer-events-none', !show);
+      this.mobileMenuBtn.setAttribute('aria-expanded', show.toString());
+      this.mainHeader.classList.toggle('menu-active', show);
+      document.body.classList.toggle('overflow-hidden', show);
+    }
+  }
+
+  // Initialize the controller
+  new HeaderController();
+</script>
   
