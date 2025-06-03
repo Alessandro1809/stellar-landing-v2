@@ -6,7 +6,7 @@ import Projects from '../components/Projects.astro';
 import EnterpriseInfo from '../components/EnterpriseInfo.astro';
 import Testimonials from '../components/Testimonials.astro';
 import CallToAction from '../components/CallToAction.astro';
-
+import { callToActionSections } from '../types/CallToAction';
 ---
 
 <Layout>
@@ -16,49 +16,6 @@ import CallToAction from '../components/CallToAction.astro';
 	<EnterpriseInfo />
 	<Testimonials />
 	<CallToAction
-	  sections={[
-		{
-			title: "Charla con nosotros",
-			subtitle: "¿Listo para el siguiente paso?",
-			description: "Comunicate abiertamente con nosotros y trabajemos juntos en tu idea, sientete libre de saludarnos o consultar por un proyecto.",
-			style: {
-				background: "bg-primary-cyan",
-				textColor: "text-secondary-blue",
-			},
-			buttons: [
-				{
-					text: "Agendar una reunión",
-					href: "/contact",
-					variant: "primary"
-				},
-				{
-					text: "Contactanos",
-					href: "/contact",
-					variant: "secondary"
-				}
-			]
-		},
-		{
-			title: "Planes personalizados",
-			subtitle: "¿Te preguntas si tu empresa se adecúa?",
-			description: "En Stellar nos adaptamos a las necesidades de tu empresa, ofrecemos planes estandar y personalizados, explora lo que ofrece cada uno de nuestros planes o consultanos por un plan que se adapte a tu empresa.",
-			style: {
-				background: "bg-[#4F7CEC]/20",
-				textColor: "text-white",
-			},
-			buttons: [
-				{
-					text: "Explora nuestros planes",
-					href: "/contact",
-					variant: "yellow"
-				},
-				{
-					text: "Consulta sin compromiso",
-					href: "/contact",
-					variant: "yellow-secondary"
-				}
-			]
-		}
-	]}
+	  sections={callToActionSections}
 	/>
 </Layout>

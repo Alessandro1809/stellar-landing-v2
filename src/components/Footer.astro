@@ -1,0 +1,142 @@
+---
+import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
+import Instagram from "@/components/icons/Instagram.astro";
+import LinkedIn from "@/components/icons/LinkedIn.astro";
+import Twitter from "@/components/icons/Twitter.astro";
+import GitHub from "@/components/icons/GitHub.astro";
+
+interface FooterLink {
+    text: string;
+    href: string;
+}
+
+interface FooterSection {
+    title: string;
+    links: FooterLink[];
+}
+
+const sections: FooterSection[] = [
+    {
+        title: "Services",
+        links: [
+            { text: "Web Development", href: "/services" },
+            { text: "UI/UX Design", href: "/services" },
+            { text: "Branding", href: "/services" },
+            { text: "Digital Marketing", href: "/services" }
+        ]
+    },
+    {
+        title: "Company",
+        links: [
+            { text: "About Us", href: "/about" },
+            { text: "Portfolio", href: "/portfolio" },
+            { text: "Plans", href: "/plans" },
+          
+        ]
+    },
+    {
+        title: "Support",
+        links: [
+            { text: "Contact", href: "/contact" },
+            { text: "FAQ", href: "/faq" },
+            { text: "Privacy Policy", href: "/privacy" },
+            { text: "Terms & Conditions", href: "/terms" }
+        ]
+    }
+];
+
+const socialLinks = [
+    { 
+        icon: Instagram,
+        href: "https://instagram.com",
+        label: "Follow us on Instagram"
+    },
+    { 
+        icon: LinkedIn,
+        href: "https://linkedin.com",
+        label: "Connect with us on LinkedIn"
+    },
+    { 
+        icon: GitHub,
+        href: "https://github.com",
+        label: "Check our GitHub"
+    },
+    { 
+        icon: Twitter,
+        href: "https://twitter.com",
+        label: "Follow us on Twitter"
+    }
+];
+---
+
+<footer class="w-full bg-secondary-blue text-white py-12 mt-20">
+    <div class="container mx-auto px-4">
+        <!-- Logo and description -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1">
+                <p class="text-gray-300 text-sm mb-4">
+                    STELLAR: Design, development, and strategy to boost your online presence.
+                </p>
+
+                <div class="flex flex-col gap-2">
+                    <a href="" class="bg-primary-yellow text-secondary-blue px-4 py-2 rounded-lg flex items-center justify-between">
+                        Explore our plans and consult with us 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M16.175 13H5q-.425 0-.712-.288T4 12t.288-.712T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.712t.3-.713z"/>
+                        </svg>
+                    </a>
+                    <a href="" class="bg-primary-cyan text-secondary-blue px-4 py-2 rounded-lg flex items-center justify-between">
+                        Contact us and let's talk 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M16.175 13H5q-.425 0-.712-.288T4 12t.288-.712T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.712t.3-.713z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Link sections -->
+            {sections.map(section => (
+                <div class="">
+                    <h3 class="text-primary-yellow font-semibold mb-4">{section.title}</h3>
+                    <ul class="space-y-2">
+                        {section.links.map(link => (
+                            <li>
+                                <a 
+                                    href={link.href}
+                                    class="text-gray-300 hover:text-primary-cyan transition-colors"
+                                >
+                                    {link.text}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-gray-700 my-8"></div>
+
+        <!-- Bottom footer -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-400 text-sm flex items-center">
+                <StellarAnimatedIcon />   © {new Date().getFullYear()} STELLAR. All rights reserved.
+            </p>
+
+            <!-- Social links -->
+            <div class="flex items-center gap-6">
+                {socialLinks.map(({ icon: Icon, href, label }) => (
+                    <a 
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-gray-400 hover:text-primary-yellow transition-colors"
+                        aria-label={label}
+                    >
+                        <Icon class="w-auto h-12" />
+                    </a>
+                ))}
+            </div>
+        </div>
+    </div>
+</footer>

@@ -71,7 +71,7 @@ export const getButtonClasses = (variant: string, style: CTASection['style']): s
         case 'yellow':
             return `${baseClasses} bg-primary-yellow text-secondary-blue hover:opacity-90 transition-opacity font-semibold`;
         case 'yellow-secondary':
-            return `${baseClasses} border border-primary-yellow bg-secondary-blue text-primary-yellow hover:opacity-90 transition-opacity`;
+            return `${baseClasses} border border-primary-yellow bg-secondary-blue text-primary-yellow hover:bg-secondary-blue/50 transition-opacity`;
         case 'cyan':
             return `${baseClasses} bg-primary-cyan text-secondary-blue hover:opacity-90 transition-opacity`;
         case 'secondary':
@@ -79,3 +79,49 @@ export const getButtonClasses = (variant: string, style: CTASection['style']): s
             return `${baseClasses} border border-secondary-blue ${style.textColor} hover:bg-secondary-blue/10 transition-colors`;
     }
 }; 
+
+
+export const callToActionSections = [
+    {
+        title: "Talk with us",
+        subtitle: "Ready for the next step?",
+        description: "Communicate openly with us and let's work together on your idea. Feel free to say hello or inquire about a project.",
+        style: {
+            background: "bg-primary-cyan",
+            textColor: "text-secondary-blue",
+        },
+        buttons: [
+            {
+                text: "Schedule a meeting",
+                href: "/contact",
+                variant: "primary"
+            },
+            {
+                text: "Contact us",
+                href: "/contact",
+                variant: "secondary"
+            }
+        ]
+    },
+    {
+        title: "Custom Plans",
+        subtitle: "Wondering if your business is a good fit?",
+        description: "At Stellar, we adapt to your company's needs. We offer both standard and customized plans. Explore what each of our plans offers or let us help you find a plan that suits your business.",
+        style: {
+            background: "bg-[#4F7CEC]/20",
+            textColor: "text-white",
+        },
+        buttons: [
+            {
+                text: "Explore our plans",
+                href: "/contact",
+                variant: "yellow"
+            },
+            {
+                text: "Free consultation",
+                href: "/contact",
+                variant: "yellow-secondary"
+            }
+        ]
+    }
+]
