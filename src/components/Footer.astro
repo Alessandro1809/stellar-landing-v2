@@ -4,7 +4,7 @@ import Instagram from "@/components/icons/Instagram.astro";
 import LinkedIn from "@/components/icons/LinkedIn.astro";
 import Twitter from "@/components/icons/Twitter.astro";
 import GitHub from "@/components/icons/GitHub.astro";
-
+import ArrowRight from "@/components/icons/ArrowRight.astro";
 interface FooterLink {
     text: string;
     href: string;
@@ -69,8 +69,13 @@ const socialLinks = [
 ];
 ---
 
-<footer class="w-full bg-secondary-blue text-white py-12 mt-20">
+<footer class="w-full bg-secondary-blue text-white py-12 mt-40">
+    
     <div class="container mx-auto px-4">
+        <div class="w-full h-[1px] my-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-cyan/50 to-transparent"/>
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-cyan to-transparent blur-sm"/>
+        </div>
         <!-- Logo and description -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div class="col-span-1">
@@ -79,17 +84,13 @@ const socialLinks = [
                 </p>
 
                 <div class="flex flex-col gap-2">
-                    <a href="" class="bg-primary-yellow text-secondary-blue px-4 py-2 rounded-lg flex items-center justify-between">
+                    <a href="" class="group bg-primary-yellow text-secondary-blue px-4 py-2 rounded-lg flex items-center justify-between hover:opacity-85">
                         Explore our plans and consult with us 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M16.175 13H5q-.425 0-.712-.288T4 12t.288-.712T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.712t.3-.713z"/>
-                        </svg>
+                        <span class="group-hover:translate-x-1 transition-transform duration-300"><ArrowRight /></span>
                     </a>
-                    <a href="" class="bg-primary-cyan text-secondary-blue px-4 py-2 rounded-lg flex items-center justify-between">
+                    <a href="" class="group bg-primary-cyan text-secondary-blue px-4 py-2 rounded-lg flex items-center justify-between hover:opacity-85">
                         Contact us and let's talk 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M16.175 13H5q-.425 0-.712-.288T4 12t.288-.712T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.712t.3-.713z"/>
-                        </svg>
+                        <span class="group-hover:translate-x-1 transition-transform duration-300"><ArrowRight /></span>
                     </a>
                 </div>
             </div>
@@ -115,7 +116,10 @@ const socialLinks = [
         </div>
 
         <!-- Divider -->
-        <div class="border-t border-gray-700 my-8"></div>
+        <div class="w-full h-[1px] my-10 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-cyan/50 to-transparent"/>
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-cyan to-transparent blur-sm"/>
+        </div>
 
         <!-- Bottom footer -->
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">

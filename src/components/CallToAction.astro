@@ -1,13 +1,24 @@
 ---
 import { type CallToActionProps, defaultSections, getButtonClasses } from '../types/CallToAction';
+import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 
-const { sections = defaultSections, className = "w-full mt-12" } = Astro.props as CallToActionProps;
+const { 
+    sections = defaultSections, 
+    className = "w-full mt-12",
+    showDecorativeLogo = false 
+} = Astro.props as CallToActionProps;
 ---
 
 <section class={className} aria-labelledby="cta-heading">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full relative">
+        {showDecorativeLogo && (
+            <div class="absolute z-10 -top-16 -right-16 opacity-100 rotate-24 pointer-events-none w-32 h-32">
+                <StellarAnimatedIcon width={100} height={120} />
+            </div>
+        )}
+
         {sections?.map((section, index) => (
-            <article class={`flex flex-col gap-4 ${section.style.background} ${section.style.textColor} p-6 md:p-8 rounded-lg`}>
+            <article class={`flex flex-col gap-4 ${section.style.background} ${section.style.textColor} p-6 md:p-8 rounded-lg relative overflow-hidden`}>
                 <div class="space-y-2">
                     <h2 id={`cta-section-${index}`} class="text-3xl md:text-4xl font-bold">
                         {section.title}

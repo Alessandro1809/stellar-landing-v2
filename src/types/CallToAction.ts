@@ -20,6 +20,7 @@ export interface CTASection {
 export interface CallToActionProps {
     sections?: CTASection[];
     className?: string;
+    showDecorativeLogo?: boolean;
 }
 
 export const defaultSections: CTASection[] = [
