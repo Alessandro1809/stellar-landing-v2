@@ -1,2 +1,77 @@
-<div>
-</div> 
+---
+import {BorderBeam} from "@/components/shadcn/BorderBeam.tsx";
+import {Particles} from "@/components/shadcn/Particles.tsx";
+---
+
+<section class="w-full py-20">
+    <div class="container mx-auto px-4">
+        <div class="bg-gradient-to-br from-secondary-blue/5 via-primary-cyan/5 to-primary-yellow/35 rounded-2xl p-8 md:p-12 backdrop-blur-sm border-2 border-primary-cyan/20 overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Left side - Title -->
+                <div class="space-y-4">
+                    <h2 class="text-4xl md:text-5xl lg:text-7xl font-bold trnsistion-all duration-300">
+                        <span class="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">Why Choose</span>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-gradient-to-r from-primary-cyan  to-primary-yellow bg-clip-text text-transparent">STELLAR</span>
+                            <span class="text-white">?</span>
+                        </div>
+                    </h2>
+                </div>
+
+                <!-- Right side - Features -->
+                <div class="space-y-8">
+                    <!-- Expertise -->
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-primary-yellow">
+                            Expertise:
+                        </h3>
+                        <p class=" bg-gradient-to-r from-white/90 to-white/70 bg-clip-text text-transparent">
+                            Our team of skilled professionals brings years of experience and industry knowledge to every project, ensuring high-quality outcomes and unparalleled service.
+                        </p>
+                    </div>
+
+                    <!-- Innovation -->
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-primary-yellow">
+                            Innovation:
+                        </h3>
+                        <p class=" bg-gradient-to-r from-white/90 to-white/70 bg-clip-text text-transparent text-lg">
+                            We stay ahead of the curve by continuously embracing the latest technologies and trends, offering our clients innovative solutions that give them a competitive edge.
+                        </p>
+                    </div>
+
+                    <!-- Commitment to Excellence -->
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-primary-yellow">
+                            Commitment to Excellence:
+                        </h3>
+                        <p class=" bg-gradient-to-r from-white/90 to-white/70 bg-clip-text text-transparent text-lg">
+                            Quality and excellence are at the core of everything we do. We are committed to delivering solutions that not only meet but exceed our clients' expectations.
+                        </p>
+                    </div>
+
+                    <!-- Customer-Centric Approach -->
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-primary-yellow">
+                            Customer-Centric Approach:
+                        </h3>
+                        <p class="bg-gradient-to-r from-white/90 to-white/70 bg-clip-text text-transparent text-lg">
+                            We prioritize our clients' needs and goals, working closely with them to develop customized strategies that deliver tangible results.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <Particles client:idle
+            className="absolute inset-0 z-0"
+            quantity={100}
+            ease={80}
+            color="#F2FF41"
+            refresh
+          />
+            <BorderBeam client:load duration={5} size={400} />
+        </div>
+        
+
+    </div>
+    
+</section> 
