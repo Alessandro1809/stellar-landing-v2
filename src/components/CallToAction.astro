@@ -1,26 +1,35 @@
 ---
----
-<section class="w-full mt-12" aria-labelledby="cta-heading">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        <article class="flex flex-col gap-4 bg-primary-cyan text-secondary-blue p-6 md:p-8 rounded-lg">
-            <h2 id="cta-services" class="text-3xl md:text-4xl font-bold">
-                Want to know more?
-            </h2>
-            <p class="text-lg md:text-xl">Learn more about our personalized services, boost your strategy with us, start today.</p>
-            <div class="flex flex-col sm:flex-col lg:flex-row gap-4 mt-2">
-                <a href="/contact" class="text-center text-lg md:text-xl text-primary-cyan bg-secondary-blue px-4 py-2 rounded-full hover:opacity-90 transition-opacity text-nowrap">Explore our plans</a>
-                <a href="/contact" class="text-center text-lg md:text-xl text-secondary-blue border border-secondary-blue px-4 py-2 rounded-full hover:bg-secondary-blue/10 transition-colors">More services</a>
-            </div>
-        </article>
+import { type CallToActionProps, defaultSections, getButtonClasses } from '../types/CallToAction';
 
-        <article class="flex flex-col gap-4 bg-[#4F7CEC]/20 p-6 md:p-8 rounded-lg text-primary-cyan">
-            <h2 id="cta-contact" class="text-3xl md:text-4xl font-bold">
-                Contact Us
-            </h2>
-            <p class="text-lg md:text-xl">Talk to us and get all your questions answered with no commitment</p>
-            <div class="mt-2">
-                <a href="/contact" class="inline-block text-lg md:text-xl text-primary-cyan bg-secondary-blue px-4 py-2 rounded-full hover:opacity-90 transition-opacity">Let's talk</a>
-            </div>
-        </article>
+const { sections = defaultSections, className = "w-full mt-12" } = Astro.props as CallToActionProps;
+---
+
+<section class={className} aria-labelledby="cta-heading">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        {sections?.map((section, index) => (
+            <article class={`flex flex-col gap-4 ${section.style.background} ${section.style.textColor} p-6 md:p-8 rounded-lg`}>
+                <div class="space-y-2">
+                    <h2 id={`cta-section-${index}`} class="text-3xl md:text-4xl font-bold">
+                        {section.title}
+                    </h2>
+                    {section.subtitle && (
+                        <h3 class="text-sm md:text-lg opacity-90">
+                            {section.subtitle}
+                        </h3>
+                    )}
+                </div>
+                <p class="text-lg md:text-xl">{section.description}</p>
+                <div class="flex flex-col sm:flex-col lg:flex-row gap-4 mt-2">
+                    {section.buttons.map(button => (
+                        <a 
+                            href={button.href}
+                            class={getButtonClasses(button.variant, section.style)}
+                        >
+                            {button.text}
+                        </a>
+                    ))}
+                </div>
+            </article>
+        ))}
     </div>
 </section>
