@@ -1,74 +1,113 @@
 ---
 import { Image } from "astro:assets";
-import HeroLogo from "../assets/HeroLogo.svg";
+import type { ImageMetadata } from "astro";
 import Button from "./ui/Button.astro";
+
+interface Props {
+  // Propiedades para el contenido de texto
+  title?: string;
+  description?: string;
+  showButtons?: boolean;
+  primaryButton?: {
+    text: string;
+    href: string;
+  };
+  secondaryButton?: {
+    text: string;
+    href: string;
+  };
+  
+  // Propiedades para el logo
+  showLogo?: boolean;
+  logoImage?: ImageMetadata;
+  logoAlt?: string;
+  logoWidth?: number;
+  logoHeight?: number;
+  colSpan?: number | string;
+  justifyContent?: string;
+  // Props para personalizar la estructura
+  reverseLayout?: boolean;
+  class?: string;
+}
+
+const {
+  title = "Leading you to success with your own light!",
+  description = "Ready to take your business to the next level? We have modern and high quality solutions in consulting, marketing, web development and more",
+  showButtons = true,
+  primaryButton = {
+    text: "Habla con nosotros",
+    href: "#contact"
+  },
+  secondaryButton = {
+    text: "Explora nuestros planes",
+    href: "#services"
+  },
+  justifyContent = "",
+  showLogo = true,
+  logoImage = (await import("../assets/HeroLogo.svg")).default,
+  logoAlt = "Hero Logo",
+  logoWidth = 500,
+  logoHeight = 500,
+  reverseLayout = false,
+  colSpan = 6,
+  class: className = "",
+} = Astro.props;
+
+// Determinar el orden de las columnas basado en reverseLayout
+const textColumnClasses = `col-span-${colSpan} self-center ${reverseLayout ? 'col-start-7' : 'col-start-1'}`;
+const logoColumnClasses = `col-span-5 self-center justify-self-end z-10 ${reverseLayout ? 'col-start-1' : 'col-start-7'}`;
 ---
 
-<div class="relative w-full h-full mt-20 md:mt-0">
-  <div class="grid-container">
+<div class:list={["relative w-full h-full mt-20 md:mt-0", className]}>
+  <div class="grid grid-cols-12 gap-8 h-screen max-w-7xl mx-auto px-8">
     <!-- Columna de texto -->
-    <div class="content-area">
-      <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
-        Leading you to success with your own light!
-      </h1>
-      <p class="text-lg md:text-xl text-gray-200 mb-8">
-        Ready to take your business to the next level? We have modern and high quality solutions in consulting, marketing, web development and more
-      </p>
-      <div class="flex gap-4 flex-wrap">
-        <Button 
-          href="#contact" 
-          variant="primary"
-        >
-          Habla con   nosotros
-        </Button>
-        <Button 
-          href="#services" 
-          variant="secondary"
-        >
-          Explora nuestros planes
-        </Button>
-      </div>
+    <div class={textColumnClasses}>
+      <slot name="content">
+        <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+          {title}
+        </h1>
+        <p class="text-lg md:text-xl text-gray-200 mb-8">
+          {description}
+        </p>
+        {showButtons && (
+          <div class={`flex gap-4 flex-wrap justify-${justifyContent}`} >
+            <Button 
+              href={primaryButton.href}
+              variant="primary"
+            >
+              {primaryButton.text}
+            </Button>
+            <Button 
+              href={secondaryButton.href}
+              variant="secondary"
+            >
+              {secondaryButton.text}
+            </Button>
+          </div>
+        )}
+      </slot>
     </div>
 
     <!-- Columna del logo -->
-    <div class="logo-area z-10">
-      <div class="animated-gradient">
-        <Image 
-          src={HeroLogo} 
-          alt="Stellar Logo" 
-          class="w-full max-w-md relative z-10"
-          width={500}
-          height={500}
-        />
+    {showLogo && (
+      <div class={logoColumnClasses}>
+        <slot name="logo">
+          <div class="animated-gradient">
+            <Image 
+              src={logoImage}
+              alt={logoAlt}
+              class="w-full max-w-md relative z-10"
+              width={logoWidth}
+              height={logoHeight}
+            />
+          </div>
+        </slot>
       </div>
-    </div>
+    )}
   </div>
-
- 
 </div>
 
 <style>
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 2rem;
-    height: 100vh;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  .content-area {
-    grid-column: 1 / 7;
-    align-self: center;
-  }
-
-  .logo-area {
-    grid-column: 7 / 12;
-    align-self: center;
-    justify-self: end;
-  }
-
   .animated-gradient {
     position: relative;
     isolation: isolate;
@@ -85,7 +124,6 @@ import Button from "./ui/Button.astro";
       #244fa559,
       #0b1a3e9d
     );
-    
     background-size: 400% 400%;
     animation: gradient 7s ease infinite;
     border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
@@ -108,30 +146,26 @@ import Button from "./ui/Button.astro";
   }
 
   @media (max-width: 768px) {
-    .grid-container {
+    .grid {
       grid-template-columns: 1fr;
       grid-template-rows: auto auto;
       gap: 2rem;
       padding: 1rem;
       height: auto;
-      min-height: 100vh;
+      min-height: 100dvh;
     }
 
-    .content-area {
-      grid-column: 1 / -1;
-      text-align: center;
+    .col-span-6,
+    .col-span-5 {
+      @apply col-span-full text-center;
     }
 
-    .logo-area {
-      grid-column: 1 / -1;
-      display: block;
-      justify-self: center;
-      max-width: 300px;
-      margin: 0 auto;
+    .col-span-5 {
+      @apply block justify-self-center max-w-[300px] mx-auto;
     }
 
     .flex {
-      justify-content: center;
+      @apply justify-center;
     }
   }
 </style>
