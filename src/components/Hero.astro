@@ -16,15 +16,15 @@ interface Props {
     text: string;
     href: string;
   };
-  
+  justifyContent?: string;
   // Propiedades para el logo
   showLogo?: boolean;
   logoImage?: ImageMetadata;
   logoAlt?: string;
   logoWidth?: number;
   logoHeight?: number;
-  colSpan?: number | string;
-  justifyContent?: string;
+  colSpan?: number;
+
   // Props para personalizar la estructura
   reverseLayout?: boolean;
   class?: string;
@@ -42,14 +42,14 @@ const {
     text: "Explora nuestros planes",
     href: "#services"
   },
-  justifyContent = "",
   showLogo = true,
   logoImage = (await import("../assets/HeroLogo.svg")).default,
   logoAlt = "Hero Logo",
   logoWidth = 500,
   logoHeight = 500,
-  reverseLayout = false,
   colSpan = 6,
+  justifyContent = "",
+  reverseLayout = false,
   class: className = "",
 } = Astro.props;
 
@@ -70,7 +70,7 @@ const logoColumnClasses = `col-span-5 self-center justify-self-end z-10 ${revers
           {description}
         </p>
         {showButtons && (
-          <div class={`flex gap-4 flex-wrap justify-${justifyContent}`} >
+          <div class={`flex gap-4 flex-wrap justify-${justifyContent}`}>
             <Button 
               href={primaryButton.href}
               variant="primary"
