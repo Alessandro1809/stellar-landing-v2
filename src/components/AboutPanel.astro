@@ -1,0 +1,42 @@
+---
+import { Particles } from '@/components/shadcn/Particles';
+
+interface Props {
+    title: string;
+    showParticles?: boolean;
+    particlesColor?: string;
+    particlesQuantity?: number;
+    particlesEase?: number;
+    className?: string;
+}
+
+const {
+    title,
+    showParticles = false,
+    particlesColor = "#F2FF41",
+    particlesQuantity = 100,
+    particlesEase = 80,
+    className = ""
+} = Astro.props;
+---
+<div class:list={[
+    "bg-gradient-to-br from-secondary-blue/10 to-primary-yellow/30 p-6 rounded-xl border border-primary-cyan/20 relative hover:opacity-90 transition-opacity duration-300",
+    className
+]}>
+    {showParticles && (
+        <Particles 
+            client:idle
+            className="absolute inset-0 z-0"
+            quantity={particlesQuantity}
+            ease={particlesEase}
+            color={particlesColor}
+            refresh
+        />
+    )}
+    <div class="relative z-10">
+        <h3 class="text-2xl font-bold text-primary-yellow mb-4">
+            {title}
+        </h3>
+        <slot />
+    </div>
+</div> 

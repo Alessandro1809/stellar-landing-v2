@@ -5,10 +5,11 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 
 <header 
   id="main-header" 
-  class="fixed top-0 left-0 w-full z-[2000] py-4"
+  class="fixed top-0 left-0 w-full z-50 py-4"
+  transition:persist
 >
-  <div class="container mx-auto px-4">
-    <nav class="flex items-center justify-between transition-all duration-300 ease-in-out" id="main-nav">
+  <div class="container mx-auto px-4 z-50">
+    <nav class="flex items-center justify-between transition-all duration-300 ease-in-out" id="main-nav" transition:persist>
       <!-- Logo -->
       <a 
         href="/" 
@@ -23,8 +24,8 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
         <div class="nav-blur-container transition-all duration-300 ease-in-out rounded-2xl px-6 py-3">
           <div class="nav-blur-effect"></div>
           <ul class="flex gap-8 relative z-[2]">
-            <li><a href="/Projects" class="nav-link">Projects</a></li>
-            <li><a href="/about" class="nav-link">About</a></li>
+            <li><a href="/StellarProjects" class="nav-link">Projects</a></li>
+            <li><a href="/About" class="nav-link">About</a></li>
             <li><a href="/services" class="nav-link">Servicios</a></li>
             <li><a href="/contact" class="nav-link">Contact</a></li>
           </ul>
@@ -77,8 +78,8 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 
     <!-- Mobile Navigation Links -->
     <ul class="flex flex-col items-center gap-6 mt-6">
-      <li><a href="/projects" class="text-white hover:opacity-75 transition-opacity">Projects</a></li>
-      <li><a href="/about" class="text-white hover:opacity-75 transition-opacity">About</a></li>
+      <li><a href="/StellarProjects" class="text-white hover:opacity-75 transition-opacity">Projects</a></li>
+      <li><a href="/About" class="text-white hover:opacity-75 transition-opacity">About</a></li>
       <li><a href="/services" class="text-white hover:opacity-75 transition-opacity">Servicios</a></li>
       <li><a href="/contact" class="text-white hover:opacity-75 transition-opacity">Contact</a></li>
       <li>
@@ -210,9 +211,24 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     }
 
     init() {
+      // Verificar el scroll inicial
+      this.checkScroll();
       this.setupScrollHandler();
       this.setupMobileMenuHandlers();
       this.setupResizeHandler();
+
+      // Manejar la navegación del view transition
+      document.addEventListener('astro:after-swap', () => {
+        this.checkScroll();
+      });
+    }
+
+    checkScroll() {
+      const shouldShowEffect = window.scrollY > this.scrollThreshold;
+      this.header?.classList.toggle('scrolled', shouldShowEffect);
+      if (this.isMobile) {
+        this.mainHeader?.classList.toggle('scrolled', shouldShowEffect);
+      }
     }
 
     setupResizeHandler() {
@@ -221,14 +237,13 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
           const wasMobile = this.isMobile;
           this.isMobile = window.innerWidth < 768;
           
-          // Si cambió de móvil a desktop, asegurarse de quitar la clase scrolled del header
           if (wasMobile && !this.isMobile) {
             this.mainHeader?.classList.remove('scrolled');
           }
-          // Si cambió de desktop a móvil y hay scroll, añadir la clase
           else if (!wasMobile && this.isMobile && window.scrollY > this.scrollThreshold) {
             this.mainHeader?.classList.add('scrolled');
           }
+          this.checkScroll();
         });
       });
     }
@@ -236,11 +251,7 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     setupScrollHandler() {
       window.addEventListener('scroll', () => {
         requestAnimationFrame(() => {
-          const shouldShowEffect = window.scrollY > this.scrollThreshold;
-          this.header?.classList.toggle('scrolled', shouldShowEffect);
-          if (this.isMobile) {
-            this.mainHeader?.classList.toggle('scrolled', shouldShowEffect);
-          }
+          this.checkScroll();
         });
       });
     }
@@ -263,7 +274,11 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     }
   }
 
-  // Initialize the controller
-  new HeaderController();
+  // Asegurarse de que el controlador se inicialice tanto en la carga inicial como después de las transiciones de vista
+  const initHeader = () => {
+    new HeaderController();
+  };
+
+  document.addEventListener('astro:page-load', initHeader);
 </script>
   

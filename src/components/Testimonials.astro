@@ -1,7 +1,14 @@
 ---
 import { TestimonialsMarquee } from "@/components/ui/TestimonialsMarquee";
+
+
+const {
+    title = "Our Clients Say",
+    subtitle = "Hear from our clients about their experience working with us"
+} = Astro.props;
 ---
     <div class="mb-32 mt-40">
-        <h2 class="text-4xl md:text-5xl font-bold mb-12">Our <span class="text-primary-cyan">Clients</span> Say</h2>
+        <h2 class="text-4xl md:text-5xl font-bold mb-12">{title}</h2>
+        <p class="text-lg mb-4">{subtitle}</p>
         <TestimonialsMarquee />
     </div> 

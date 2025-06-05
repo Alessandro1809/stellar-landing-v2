@@ -1,0 +1,54 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Hero from '@/components/Hero.astro';
+import Button from '@/components/ui/Button.astro';
+import Projects from '@/components/Projects.astro';
+import Testimonials from '@/components/Testimonials.astro';
+import CallToAction from '@/components/ui/CallToAction.astro';
+import { callToActionSections } from '@/types/CallToAction';
+
+const secondaryButton = {
+    text: "Explore our plans",
+    href: "#services"
+}
+
+const primaryButton = {
+    text: "Talk to us",
+    href: "#contact"
+}
+---
+
+<Layout>
+    <Hero 
+        title="Discover how our solutions have transformed businesses like yours"
+        description="Learn how we have driven businesses forward with innovative and creative solutions"
+        primaryButton={primaryButton}
+        secondaryButton={secondaryButton}
+        showButtons={true}
+        showLogo={false}
+        colSpan={'full'}
+        justifyContent="center"
+        class="text-center"
+    />
+    <Projects 
+        title={{
+            main: "Explore our",
+            highlighted: "Projects"
+        }}
+        subtitle="Every project is an opportunity to create something unique and meaningful. Here are some of our most notable projects, where we combine creativity, strategy, and technology to solve our clients challenges and exceed their expectations. Be inspired by our solutions!"
+        showPortfolioLink={true}
+        portfolioLinkTitle="Interested in working with us?"
+        portfolioLinkButtonText="See our plans"
+        portfolioLinkButtonHref="/Pricing"
+    />
+    <Testimonials 
+        title="Our Clients Say"
+        subtitle=`Hear from our clients about their experience working with us
+Discover how we've helped individuals and businesses achieve their goals through personalized service, expert solutions, and a genuine commitment to excellence. Don’t just take our word for it see what real clients have to say and imagine what we could accomplish together.`
+    />
+
+    <CallToAction
+	  sections={callToActionSections}
+	  showDecorativeLogo={true}
+	/>
+</Layout>

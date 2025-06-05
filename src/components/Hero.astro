@@ -17,13 +17,14 @@ interface Props {
     href: string;
   };
   justifyContent?: string;
+  
   // Propiedades para el logo
   showLogo?: boolean;
   logoImage?: ImageMetadata;
   logoAlt?: string;
   logoWidth?: number;
   logoHeight?: number;
-  colSpan?: number;
+  colSpan?: number | 'full';
 
   // Props para personalizar la estructura
   reverseLayout?: boolean;
@@ -53,15 +54,28 @@ const {
   class: className = "",
 } = Astro.props;
 
-// Determinar el orden de las columnas basado en reverseLayout
-const textColumnClasses = `col-span-${colSpan} self-center ${reverseLayout ? 'col-start-7' : 'col-start-1'}`;
-const logoColumnClasses = `col-span-5 self-center justify-self-end z-10 ${reverseLayout ? 'col-start-1' : 'col-start-7'}`;
+const textColumnClasses = {
+  'col-span-full': colSpan === 'full',
+  'col-span-6': colSpan !== 'full',
+  'col-start-7': reverseLayout && colSpan !== 'full',
+  'col-start-1': !reverseLayout && colSpan !== 'full',
+  'self-center': true
+};
+
+const logoColumnClasses = {
+  'col-span-5': true,
+  'self-center': true,
+  'justify-self-end': true,
+  'z-10': true,
+  'col-start-1': reverseLayout,
+  'col-start-7': !reverseLayout
+};
 ---
 
 <div class:list={["relative w-full h-full mt-20 md:mt-0", className]}>
-  <div class="grid grid-cols-12 gap-8 h-screen max-w-7xl mx-auto px-8">
+  <div class="grid grid-cols-12 gap-8 h-screen max-w-7xl mx-auto">
     <!-- Columna de texto -->
-    <div class={textColumnClasses}>
+    <div class:list={textColumnClasses}>
       <slot name="content">
         <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
           {title}
@@ -70,7 +84,10 @@ const logoColumnClasses = `col-span-5 self-center justify-self-end z-10 ${revers
           {description}
         </p>
         {showButtons && (
-          <div class={`flex gap-4 flex-wrap justify-${justifyContent}`}>
+          <div class:list={[
+            'flex gap-4 flex-wrap',
+            justifyContent && `justify-${justifyContent}`
+          ]}>
             <Button 
               href={primaryButton.href}
               variant="primary"
@@ -90,7 +107,7 @@ const logoColumnClasses = `col-span-5 self-center justify-self-end z-10 ${revers
 
     <!-- Columna del logo -->
     {showLogo && (
-      <div class={logoColumnClasses}>
+      <div class:list={logoColumnClasses}>
         <slot name="logo">
           <div class="animated-gradient">
             <Image 

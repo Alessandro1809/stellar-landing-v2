@@ -1,0 +1,74 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Hero from '@/components/Hero.astro';
+import StellarServices from '@/components/icons/StellarServices.astro';
+import CompanyBento from '@/components/CompanyBento.astro';
+import FoundersOfStellar from '@/components/FoundersOfStellar.astro';
+import CallToAction from '@/components/ui/CallToAction.astro';
+import { callToActionSections } from '@/types/CallToAction';
+import SplitTitle from '@/components/SplitTitle.astro';
+
+const secondaryButton = {
+    text: "Explore our plans",
+    href: "#services"
+}
+
+const primaryButton = {
+    text: "Let's talk",
+    href: "#contact"
+}
+---
+
+<Layout>
+    <main>
+        <Hero 
+            title="About us"
+            description="Learn how our team can take your vision to the next level, let's talk about how we can help you achieve your goals."
+            primaryButton={primaryButton}
+            secondaryButton={secondaryButton}
+            showButtons={true}
+            showLogo={false}
+            colSpan={'full'}
+            justifyContent="center"
+            class="text-center"
+        />
+
+        <article class="about-content">
+            <header class="flex flex-col items-center justify-center mb-20">
+                <StellarServices />
+                <SplitTitle
+                    title={{
+                        main: "About STELLAR:",
+                        highlighted: " Vision, Mission, Values & Approach"
+                    }}
+                />
+            </header>
+            
+            <section class="introduction">
+                <p class="text-gray-200 mb-12 mt-20">
+                    Welcome to STELLAR, where technology and creativity come together to take your business to new horizons. Founded in November 2023, STELLAR is an innovative company specializing in software development, branding, web design, and SEO. Our commitment is to provide exceptional services and tailored solutions to meet the unique needs of each client.
+                </p>
+
+                <CompanyBento />
+            </section>
+
+            <section class="team-section">
+                <FoundersOfStellar />
+            </section>
+
+            <section class="cta-section pt-52 pb-20">
+                <CallToAction
+                    sections={callToActionSections}
+                    showDecorativeLogo={true}
+                />
+            </section>
+        </article>
+    </main>
+</Layout>
+
+<style>
+    .bg-secondary-blue\/10 {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+</style>

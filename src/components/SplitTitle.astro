@@ -1,0 +1,24 @@
+---
+interface Props {
+    title: {
+        main: string;
+        highlighted: string;
+    };
+    className?: string;
+    mainClassName?: string;
+    highlightedClassName?: string;
+}
+
+const { 
+    title,
+    className = "text-4xl md:text-5xl lg:text-5xl font-bold mt-32",
+    mainClassName = "text-gray-200",
+    highlightedClassName = "text-primary-yellow"
+} = Astro.props;
+---
+
+<h2 class:list={[className]}>
+    <span class:list={[mainClassName]}>{title.main}</span>
+    {" "}
+    <span class:list={[highlightedClassName]}>{title.highlighted}</span>
+</h2> 

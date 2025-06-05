@@ -1,0 +1,54 @@
+---
+import AboutPanel from '@/components/AboutPanel.astro';
+
+---
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <!-- Left Panel - Our Approach -->
+    <AboutPanel 
+        title="Our Approach"
+        showParticles={true}
+        className="p-8"
+    >
+        <div class="space-y-4 text-gray-200">
+            <p>
+                We put the client at the center of everything we do. We take the time to thoroughly understand their goals, challenges, and vision, creating tailored solutions that perfectly align with their needs.
+            </p>
+            <p>
+                Our commitment is not just to meet but to exceed expectations, building relationships based on trust, transparency, and measurable results.
+            </p>
+            <p>
+                At STELLAR, we don't just build solutions; we build dreams that become realities. Our passion for excellence and progress motivates us to help each client write their own success story, one that inspires and transcends boundaries.
+            </p>
+        </div>
+    </AboutPanel>
+
+    <!-- Right Panel - 3 Elements Grid -->
+    <div class="grid grid-cols-1 gap-4">
+        <AboutPanel 
+            title="Values"
+            showParticles={true}
+        >
+            <p class="text-gray-200">
+                We believe that success is built on a foundation of innovation, integrity, and collaboration. We value creativity as the engine of change, technology as a tool for progress, and trust as the pillar of our client relationships.
+            </p>
+        </AboutPanel>
+
+        <AboutPanel 
+            title="Vision"
+            showParticles={true}
+        >
+            <p class="text-gray-200">
+                We aspire to be a global reference in software development, digital marketing, branding, web design, and SEO, helping companies of all sizes reach their maximum potential. We want to lead a future where technology and creativity transform the world.
+            </p>
+        </AboutPanel>
+
+        <AboutPanel 
+            title="Mission"
+            showParticles={true}
+        >
+            <p class="text-gray-200">
+                Our mission is to empower companies through innovative technological solutions and creative marketing strategies that drive their growth and success. We are dedicated to delivering excellence and consistently exceeding our clients' expectations.
+            </p>
+        </AboutPanel>
+    </div>
+</div>
