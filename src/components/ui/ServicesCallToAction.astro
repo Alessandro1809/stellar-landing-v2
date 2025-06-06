@@ -1,0 +1,101 @@
+---
+import SplitTitle from '../SplitTitle.astro';
+
+interface ButtonProps {
+    text: string;
+    link: string;
+    variant: 'primary' | 'secondary';
+}
+
+interface Props {
+   
+    introductoryText?: string;
+    showCard?: boolean;
+    titleCard?: string;
+    subtitleCard?: string;
+    cardDescription?: string;
+    buttons?: ButtonProps[];
+}
+
+const {
+   
+    introductoryText = "Our team combines cutting-edge technology and customized strategies to help you stand out in a competitive market. Whether it's creating robust digital platforms or improving your business's visibility, we're here to take your ideas to the next level. Transform your business with our comprehensive digital solutions!",
+    showCard = true,
+    titleCard = "Stellar adapts to your needs",
+    subtitleCard = "Do you have a specific service or job in mind?",
+    cardDescription = "We design customized solutions for businesses of all sizes. Whether you need a strategic plan or a customized project, we're here to help you drive your business growth. Contact us today and find out how we can take your company to the next level.",
+    buttons = [
+        {
+            text: "Contact us",
+            link: "/contact",
+            variant: "primary"
+        },
+        {
+            text: "Explore our plans",
+            link: "/services",
+            variant: "secondary"
+        },
+        {
+            text: "Schedule a call",
+            link: "/about",
+            variant: "secondary"
+        }
+    ]
+} = Astro.props;
+
+const getButtonClasses = (variant: ButtonProps['variant']) => {
+    const baseClasses = "px-6 py-2 rounded-full transition-all duration-300 font-medium";
+    const variants = {
+        primary: "bg-primary-cyan text-secondary-blue hover:bg-primary-cyan/80",
+        secondary: "bg-secondary-blue/30 text-white hover:bg-secondary-blue/40 "
+    };
+    return `${baseClasses} ${variants[variant]}`;
+};
+
+---
+
+<section class="w-full py-12 md:py-32">
+    <div >
+        <div class="mt-12 mb-12">
+            <SplitTitle
+            title={{
+                main: "How Stellar ",
+                highlighted: "can help you?"
+            }}
+         />
+        </div>
+        <p class="text-lg md:text-xl text-gray-200 mb-12 ">
+            {introductoryText}
+        </p>
+
+        {showCard && (
+            <div class="bg-gradient-to-br from-secondary-blue/10 to-primary-cyan/30 p-8 rounded-xl border border-primary-cyan/20">
+                <div class="space-y-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">
+                        {titleCard}
+                    </h2>
+                    <h3 class="text-xl text-primary-cyan">
+                        {subtitleCard}
+                    </h3>
+                    <p class="text-gray-200">
+                        {cardDescription}
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4 mt-8">
+                        {buttons.map(button => (
+                            <a
+                                href={button.link}
+                                class={getButtonClasses(button.variant)}
+                            >
+                                {button.text}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )}
+    </div>
+</section>
+
+
+

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import {
   type ComponentPropsWithoutRef,
   useEffect,
@@ -43,6 +43,10 @@ export function AnimatedGridPattern({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [squares, setSquares] = useState(() => generateSquares(numSquares));
 
+  // Scroll parallax setup with smooth transition
+  const { scrollY } = useScroll();
+  const yPos = useTransform(scrollY, [0, 600], [0, -150]);
+
   function getPos() {
     return [
       Math.floor((Math.random() * dimensions.width) / width),
@@ -50,7 +54,6 @@ export function AnimatedGridPattern({
     ];
   }
 
-  // Adjust the generateSquares function to return objects with an id, x, and y
   function generateSquares(count: number) {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -58,7 +61,6 @@ export function AnimatedGridPattern({
     }));
   }
 
-  // Function to update a single square's position
   const updateSquarePosition = (id: number) => {
     setSquares((currentSquares) =>
       currentSquares.map((sq) =>
@@ -72,14 +74,20 @@ export function AnimatedGridPattern({
     );
   };
 
-  // Update squares to animate in
+  // Persist squares state between page transitions
+  useEffect(() => {
+    const savedSquares = squares;
+    return () => {
+      setSquares(savedSquares);
+    };
+  }, []);
+
   useEffect(() => {
     if (dimensions.width && dimensions.height) {
       setSquares(generateSquares(numSquares));
     }
   }, [dimensions, numSquares]);
 
-  // Resize observer to update container dimensions
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
@@ -102,54 +110,68 @@ export function AnimatedGridPattern({
   }, [containerRef]);
 
   return (
-    <svg
-      ref={containerRef}
-      aria-hidden="true"
-      className={cn(
-        "pointer-events-none absolute inset-0 h-full w-full fill-gray-400/10 stroke-gray-400/10",
-        props["class:list"]
-      )}
-      {...props}
+    <motion.div
+      style={{ y: yPos }}
+      className="w-full h-full"
+      initial={false}
+      transition={{ 
+        y: {
+          type: "spring",
+          stiffness: 100,
+          damping: 30,
+          restDelta: 0.001
+        }
+      }}
     >
-      <defs>
-        <pattern
-          id={id}
-          width={width}
-          height={height}
-          patternUnits="userSpaceOnUse"
-          x={x}
-          y={y}
-        >
-          <path
-            d={`M.5 ${height}V.5H${width}`}
-            fill="none"
-            strokeDasharray={strokeDasharray}
-          />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#${id})`} />
-      <svg x={x} y={y} className="overflow-visible">
-        {squares.map(({ pos: [x, y], id }, index) => (
-          <motion.rect
-            initial={{ opacity: 0 }}
-            animate={{ opacity: maxOpacity }}
-            transition={{
-              duration,
-              repeat: 1,
-              delay: index * 0.1,
-              repeatType: "reverse",
-            }}
-            onAnimationComplete={() => updateSquarePosition(id)}
-            key={`${x}-${y}-${index}`}
-            width={width - 1}
-            height={height - 1}
-            x={x * width + 1}
-            y={y * height + 1}
-            fill="#4F7CEC"
-            strokeWidth="0"
-          />
-        ))}
+      <svg
+        ref={containerRef}
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-0 h-full w-full fill-gray-400/10 stroke-gray-400/10",
+          props["class:list"]
+        )}
+        {...props}
+      >
+        <defs>
+          <pattern
+            id={id}
+            width={width}
+            height={height}
+            patternUnits="userSpaceOnUse"
+            x={x}
+            y={y}
+          >
+            <path
+              d={`M.5 ${height}V.5H${width}`}
+              fill="none"
+              strokeDasharray={strokeDasharray}
+            />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#${id})`} />
+        <svg x={x} y={y} className="overflow-visible">
+          {squares.map(({ pos: [x, y], id }, index) => (
+            <motion.rect
+              initial={{ opacity: 0 }}
+              animate={{ opacity: maxOpacity }}
+              transition={{
+                duration,
+                repeat: 1,
+                delay: index * 0.1,
+                repeatType: "reverse",
+              }}
+              onAnimationComplete={() => updateSquarePosition(id)}
+              key={`${x}-${y}-${index}`}
+              width={width - 1}
+              height={height - 1}
+              x={x * width + 1}
+              y={y * height + 1}
+              fill="#4F7CEC"
+              strokeWidth="0"
+            />
+          ))}
+        </svg>
       </svg>
-    </svg>
+    </motion.div>
   );
 }

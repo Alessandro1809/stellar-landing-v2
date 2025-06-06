@@ -30,6 +30,11 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
    * @default 4
    */
   repeat?: number;
+  /**
+   * Speed of the animation
+   * @default 40
+   */
+  speed?: number;
 }
  
 export function Marquee({
@@ -39,13 +44,14 @@ export function Marquee({
   children,
   vertical = false,
   repeat = 4,
+  speed = 40,
   ...props
 }: MarqueeProps) {
   return (
     <div
       {...props}
       className={cn(
-        "group flex overflow-hidden p-2 [--duration:40s] [--gap:1rem] [gap:var(--gap)]",
+        "group flex overflow-hidden p-2 [--duration:40s] [--gap:1.5rem] [gap:var(--gap)]",
         {
           "flex-row": !vertical,
           "flex-col": vertical,

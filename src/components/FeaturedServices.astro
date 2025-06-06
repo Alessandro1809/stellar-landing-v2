@@ -2,21 +2,24 @@
 import { Image } from "astro:assets";
 import { ServicesMarquee } from "@/components/ui/ServicesMarquee";
 import CallToAction from "@/components/ui/CallToAction.astro";
+
+import SplitTitle from "@/components/SplitTitle.astro";
+
 ---
 
-<section class="bg-gradient-to-b from-theme-deepblue/50 to-theme-deepblue">
-  <!-- Curva decorativa superior -->
+<section class="pb-10">
 
-  <div class=" py-20">
-    <h2 class="text-4xl md:text-5xl font-bold mb-12">
-      <span class="text-white">Featured</span>
-      <span class="text-primary-cyan">Services</span>
-    </h2>
+
+  <div >
+    <SplitTitle title={{
+      main: "Featured",
+      highlighted: "Services",
+      
+    }}
+    highlightedClassName="text-primary-cyan" />
 
     <ServicesMarquee client:load />
-    <div class="">
-     <CallToAction />
-    </div>
+    
   </div>
 </section>
 

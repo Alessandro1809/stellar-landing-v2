@@ -68,7 +68,7 @@ const ServiceCard = ({ name, description, icon }: Service) => {
 
 export function ServicesMarquee() {
   return (
-    <div className="relative flex w-full flex-col items-center justify-center gap-8 overflow-hidden py-10"
+    <div className="relative flex w-full flex-col items-center justify-center gap-8 overflow-hidden "
     style={{
         
         WebkitMaskImage:

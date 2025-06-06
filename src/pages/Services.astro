@@ -1,0 +1,52 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import FeaturedServices from "@/components/FeaturedServices.astro";
+import StellarServices from "@/components/icons/StellarServices.astro";
+import ServicesCallToAction from "@/components/ui/ServicesCallToAction.astro";
+import Testimonials from "@/components/Testimonials.astro";
+import CallToAction from "@/components/ui/CallToAction.astro";
+import { callToActionSections } from "@/types/CallToAction";
+
+const primaryButton = {
+    text: "Contactanos",
+    href: "#contact"
+}
+const secondaryButton = {
+    text: "Explorar Planes",
+    href: "#plans"
+}
+---
+
+<Layout>
+        <Hero 
+            title="Transform Your Business with Innovative Digital Solutions"
+            description="Discover our customized software, marketing, web design, SEO, and branding services to take your business to the next level."
+            primaryButton={primaryButton}
+            secondaryButton={secondaryButton}
+            showButtons={true}
+            showLogo={false}
+            colSpan={'full'}
+            justifyContent="center"
+            class="text-center"
+        />
+
+        <section>
+                <h3 class="text-white text-xl mb-10">At our company, we specialize in custom software development, professional web design, SEO strategies, and creative branding, designed to strengthen your brand's presence and growth. </h3>
+                <div class="flex justify-center items-center -mb-12 ">
+                    <StellarServices />   
+                </div>
+                   
+        </section>
+
+
+        <FeaturedServices />
+        <ServicesCallToAction />
+        <Testimonials />
+
+        <CallToAction
+        sections={callToActionSections}
+        showDecorativeLogo={true}
+	    />
+
+</Layout>
