@@ -8,6 +8,7 @@ import Testimonials from "@/components/Testimonials.astro";
 import CallToAction from "@/components/ui/CallToAction.astro";
 import { callToActionSections } from "@/types/CallToAction";
 
+
 const primaryButton = {
     text: "Contactanos",
     href: "#contact"
@@ -31,18 +32,15 @@ const secondaryButton = {
             class="text-center"
         />
 
-        <section>
-                <h3 class="text-white text-xl mb-10">At our company, we specialize in custom software development, professional web design, SEO strategies, and creative branding, designed to strengthen your brand's presence and growth. </h3>
-                <div class="flex justify-center items-center -mb-12 ">
-                    <StellarServices />   
-                </div>
-                   
-        </section>
-
-
-        <FeaturedServices />
+    
         <ServicesCallToAction />
-        <Testimonials />
+
+        <div class="py-20 ">
+            <FeaturedServices/>
+        </div>
+        
+        
+       
 
         <CallToAction
         sections={callToActionSections}

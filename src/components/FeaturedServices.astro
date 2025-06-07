@@ -1,22 +1,19 @@
 ---
-import { Image } from "astro:assets";
 import { ServicesMarquee } from "@/components/ui/ServicesMarquee";
-import CallToAction from "@/components/ui/CallToAction.astro";
-
 import SplitTitle from "@/components/SplitTitle.astro";
 
 ---
 
 <section class="pb-10">
 
-
   <div >
     <SplitTitle title={{
-      main: "Featured",
-      highlighted: "Services",
+      main: "Consulting and",
+      highlighted: " Software Development Services",
       
     }}
-    highlightedClassName="text-primary-cyan" />
+    highlightedClassName="text-primary-cyan" 
+    />
 
     <ServicesMarquee client:load />
     

@@ -1,5 +1,6 @@
 ---
 import SplitTitle from '../SplitTitle.astro';
+import  StellarServices  from '@/components/icons/StellarServices.astro';
 
 interface ButtonProps {
     text: string;
@@ -19,7 +20,7 @@ interface Props {
 
 const {
    
-    introductoryText = "Our team combines cutting-edge technology and customized strategies to help you stand out in a competitive market. Whether it's creating robust digital platforms or improving your business's visibility, we're here to take your ideas to the next level. Transform your business with our comprehensive digital solutions!",
+    introductoryText = "At our company, we specialize in custom software development, professional web design, SEO strategies, and creative branding, designed to strengthen your brand's presence and growth. Our team combines cutting-edge technology and customized strategies to help you stand out in a competitive market. Whether it's creating robust digital platforms or improving your business's visibility, we're here to take your ideas to the next level. Transform your business with our comprehensive digital solutions!",
     showCard = true,
     titleCard = "Stellar adapts to your needs",
     subtitleCard = "Do you have a specific service or job in mind?",
@@ -55,19 +56,24 @@ const getButtonClasses = (variant: ButtonProps['variant']) => {
 ---
 
 <section class="w-full py-12 md:py-32">
-    <div >
-        <div class="mt-12 mb-12">
+  
+        
+        
             <SplitTitle
             title={{
                 main: "How Stellar ",
                 highlighted: "can help you?"
             }}
+            highlightedClassName="text-primary-cyan"
          />
-        </div>
+        
+  
+   
         <p class="text-lg md:text-xl text-gray-200 mb-12 ">
             {introductoryText}
         </p>
-
+        
+  
         {showCard && (
             <div class="bg-gradient-to-br from-secondary-blue/10 to-primary-cyan/30 p-8 rounded-xl border border-primary-cyan/20">
                 <div class="space-y-4">
@@ -94,7 +100,7 @@ const getButtonClasses = (variant: ButtonProps['variant']) => {
                 </div>
             </div>
         )}
-    </div>
+    
 </section>
 
 
