@@ -1,0 +1,105 @@
+---
+import ArrowRight from "@/components/icons/ArrowRight.astro";
+import { Particles } from "./shadcn/Particles";
+import { BorderBeam } from "./shadcn/BorderBeam";
+
+interface Props {
+    title?: {
+        prefix?: string;
+        highlighted?: string;
+        suffix?: string;
+    };
+    description?: string;
+    features?: string[];
+    additionalText?: string;
+    callToAction?: {
+        text: string;
+        subtext: string;
+    };
+}
+
+const {
+    title = {
+        prefix: "Coming Soon:",
+        highlighted: "Digital Marketing",
+        suffix: "Plans designed for all businesses!"
+    },
+    description = "We know that every business is unique, and that's why we're preparing comprehensive digital marketing plans that adapt to the needs of small, medium, and large companies. Whether you want to boost your online presence, increase your sales, or strengthen your brand, our new packages will offer everything necessary to succeed in the digital world.",
+    features = [
+        "Advanced strategies to improve your visibility and attract organic customers.",
+        "Effective advertising campaigns on social media and Google Ads to maximize your reach.",
+        "High-impact branding to give your business a unique and professional identity.",
+        "Creation of attractive content, consistent publishing, and professional management of your online community.",
+        "Personalized designs and strategic sequences to build customer loyalty and increase conversions."
+    ],
+    additionalText = "Whether your focus is e-commerce, professional services, startups, or large corporations, we're building packages that will adapt to your vision and goals.",
+    callToAction = {
+        text: "Get ready to take your business to the next level with our new digital marketing plans!",
+        subtext: "Ready to be the first to know more? Stay tuned!"
+    }
+} = Astro.props;
+---
+
+<div class="relative overflow-hidden w-full rounded-2xl bg-gradient-to-br from-secondary-blue/10 to-primary-yellow/30 backdrop-blur-sm border border-primary-cyan/20 p-12">
+    
+    <div class="space-y-8">
+        <!-- Title Section -->
+        <h2 class="text-4xl md:text-5xl font-bold text-white">
+            {title.prefix} <span class="text-primary-cyan">{title.highlighted}</span> {title.suffix}
+        </h2>
+
+        <!-- Description -->
+        <p class="text-lg text-gray-300">
+            {description}
+        </p>
+
+        <!-- Features Section -->
+        <div class="space-y-6">
+            <h3 class="text-2xl font-bold text-primary-yellow">What will these new plans include?</h3>
+            <ul class="space-y-4 text-white">
+                {features.map(feature => (
+                    <li class="flex items-start gap-2">
+                        <span class="text-primary-cyan mt-1">•</span>
+                        <span>{feature}</span>
+                    </li>
+                ))}
+            </ul>
+        </div>
+
+        <!-- Additional Text -->
+        <p class="text-lg text-gray-300">
+            {additionalText}
+        </p>
+
+        <!-- Call to Action -->
+        <div class="text-center space-y-2">
+            <p class="text-xl font-bold text-primary-yellow">
+                {callToAction.text}
+            </p>
+            <p class="text-lg text-primary-cyan">
+                {callToAction.subtext}
+            </p>
+        </div>
+
+        <!-- Newsletter Subscription -->
+        <div class="flex flex-col items-center justify-center mt-8">
+            <p class="text-white mb-4">Stay up to date with our news</p>
+            <div class="flex gap-2">
+                <button class="px-6 py-2 bg-primary-yellow text-secondary-blue font-medium rounded-full hover:bg-primary-yellow/80 transition-all duration-300 flex items-center gap-2">
+                    Subscribe
+                    <span class="group-hover:translate-x-1 transition-transform duration-300">
+                        <ArrowRight />
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <Particles client:idle
+    className="absolute inset-0 z-0"
+    quantity={100}
+    ease={80}
+    color="#F2FF41"
+    refresh
+  />
+  <BorderBeam client:idle duration={5} size={400} />
+</div>

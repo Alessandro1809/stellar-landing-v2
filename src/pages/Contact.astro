@@ -1,0 +1,35 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import FormContact from "@/components/FormContact.astro";
+import CommingSoon from "@/components/CommingSoon.astro";
+import CallToAction from "@/components/ui/CallToAction.astro";
+import { callToActionSectionsContact } from "@/types/CallToAction";
+const primaryButton = {
+    text: "Explore our plans",
+    href: "/Pricing"
+}
+
+---
+
+<Layout>
+    <Hero 
+            title="Digital Solutions that Transform Your Business"
+            description="Contact us today and start growing with digital strategies designed for your success!"
+            primaryButton={primaryButton}
+            showButton1={true}
+            showButton2={false}
+            showLogo={false}
+            colSpan={'full'}
+            justifyContent="center"
+            class="text-center"
+        />
+    <FormContact />
+    <CommingSoon />
+    <div class="pt-32">
+    <CallToAction
+        sections={callToActionSectionsContact}
+        showDecorativeLogo={true}
+	    />
+    </div>
+</Layout>

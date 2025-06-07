@@ -126,3 +126,48 @@ export const callToActionSections = [
         ]
     }
 ]
+
+export const callToActionSectionsContact = [
+    {
+        title: "Check out ourincredible plans",
+        subtitle: "Ready for the next step?",
+        description: "Communicate openly with us and let's work together on your idea. Feel free to say hello or inquire about a project. Explore our services with total freedom and ask about them",
+        style: {
+            background: "bg-primary-cyan",
+            textColor: "text-secondary-blue",
+        },
+        buttons: [
+            {
+                text: "Schedule a meeting",
+                href: "/contact",
+                variant: "primary"
+            },
+            {
+                text: "Explore our plans",
+                href: "/Pricing",
+                variant: "secondary"
+            }
+        ]
+    },
+    {
+        title: "Explore the portfolio",
+        subtitle: "Do you have questions or are you interested in seeing our results?",
+        description: "We adapt to your company's needs. Discover how we've transformed businesses like yours by exploring our featured projects or learning more about who we are and our mission. Get inspired and let's work together on the next big step for your company!",
+        style: {
+            background: "bg-[#4F7CEC]/20",
+            textColor: "text-white",
+        },
+        buttons: [
+            {
+                text: "Portfolio",
+                href: "/StellarProjects",
+                variant: "yellow"
+            },
+            {
+                text: "About us",
+                href: "/About",
+                variant: "yellow-secondary"
+            }
+        ]
+    }
+]

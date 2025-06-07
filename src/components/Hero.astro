@@ -17,6 +17,8 @@ interface Props {
     href: string;
   };
   justifyContent?: string;
+  showButton1?: boolean;
+  showButton2?: boolean;
   
   // Propiedades para el logo
   showLogo?: boolean;
@@ -25,6 +27,7 @@ interface Props {
   logoWidth?: number;
   logoHeight?: number;
   colSpan?: number | 'full';
+  
 
   // Props para personalizar la estructura
   reverseLayout?: boolean;
@@ -35,6 +38,8 @@ const {
   title = "Leading you to success with your own light!",
   description = "Ready to take your business to the next level? We have modern and high quality solutions in consulting, marketing, web development and more",
   showButtons = true,
+  showButton1 = true,
+  showButton2 = true,
   primaryButton = {
     text: "Habla con nosotros",
     href: "#contact"
@@ -88,18 +93,22 @@ const logoColumnClasses = {
             'flex gap-4 flex-wrap',
             justifyContent && `justify-${justifyContent}`
           ]}>
+            {showButton1 && (
             <Button 
               href={primaryButton.href}
               variant="primary"
             >
               {primaryButton.text}
             </Button>
+            )}
+            {showButton2 && (
             <Button 
               href={secondaryButton.href}
               variant="secondary"
             >
               {secondaryButton.text}
             </Button>
+            )}
           </div>
         )}
       </slot>
