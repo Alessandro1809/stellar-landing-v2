@@ -1,5 +1,6 @@
 ---
 import Button from "./Button.astro";
+import Toast from "./Toast.astro";
 
 interface Props {
     isOpen?: boolean;
@@ -21,28 +22,7 @@ const formatDateForInput = (date: Date) => {
 };
 ---
 
-<!-- Toast Notification -->
-<div 
-    id="toast-notification" 
-    class="fixed top-4 right-4 z-50 transform translate-x-full transition-all duration-300 opacity-0"
->
-    <div class="flex items-center p-4 rounded-lg shadow bg-theme-deepblue border border-primary-yellow/30">
-        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
-            <div id="toast-icon"></div>
-        </div>
-        <div class="ml-3 text-sm font-normal" id="toast-message"></div>
-        <button 
-            type="button" 
-            class="ml-4 -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 text-gray-400 hover:text-gray-900 focus:ring-2 focus:ring-gray-300"
-            id="close-toast"
-        >
-            <span class="sr-only">Close</span>
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-            </svg>
-        </button>
-    </div>
-</div>
+<Toast />
 
 <!-- Modal -->
 <div 
@@ -163,61 +143,15 @@ const formatDateForInput = (date: Date) => {
 </div>
 
 <script>
-    function showToast(message: string, type: 'success' | 'error' = 'success') {
-        const toast = document.getElementById('toast-notification');
-        const toastMessage = document.getElementById('toast-message');
-        const toastIcon = document.getElementById('toast-icon');
-        
-        // Set message
-        if (toastMessage) toastMessage.textContent = message;
-        
-        // Set icon based on type
-        if (toastIcon) {
-            if (type === 'success') {
-                toastIcon.innerHTML = `
-                    <svg class="w-5 h-5 text-primary-yellow" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>`;
-            } else {
-                toastIcon.innerHTML = `
-                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>`;
-            }
-        }
-        
-        // Show toast
-        if (toast) {
-            toast.classList.remove('translate-x-full', 'opacity-0');
-            toast.classList.add('translate-x-0', 'opacity-100');
-            
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                hideToast();
-            }, 5000);
-        }
-    }
-    
-    function hideToast() {
-        const toast = document.getElementById('toast-notification');
-        if (toast) {
-            toast.classList.add('translate-x-full', 'opacity-0');
-            toast.classList.remove('translate-x-0', 'opacity-100');
-        }
-    }
-
     function initScheduleModal() {
         // Seleccionar todos los modales
         const modals = document.querySelectorAll<HTMLElement>('[data-button-id]');
-        const closeToastBtn = document.getElementById('close-toast');
         
-        closeToastBtn?.addEventListener('click', hideToast);
-
         modals.forEach(modal => {
             const closeBtn = modal.querySelector<HTMLButtonElement>('[data-close-modal]');
             const cancelBtn = modal.querySelector<HTMLButtonElement>('[data-cancel-schedule]');
             const form = modal.querySelector<HTMLFormElement>('[data-schedule-form]');
-            
+        
             // Close modal function
             const closeModal = () => {
                 modal.classList.add('opacity-0', 'pointer-events-none');
@@ -260,14 +194,14 @@ ${formData.get('mensaje') || 'No additional message provided.'}
                     const data = await response.json();
 
                     if (response.ok) {
-                        showToast('Meeting request sent successfully!', 'success');
+                        window.showToast('¡Solicitud de reunión enviada correctamente!', 'success');
                         closeModal();
                     } else {
-                        showToast(data.message || 'Error sending meeting request', 'error');
+                        window.showToast(data.message || 'Error al enviar la solicitud de reunión', 'error');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    showToast('Error sending meeting request', 'error');
+                    window.showToast('Error al enviar la solicitud de reunión', 'error');
                 }
             });
         });
