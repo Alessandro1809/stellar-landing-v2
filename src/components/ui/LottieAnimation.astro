@@ -8,6 +8,7 @@ interface Props {
     height?: string;
     class?: string;
     hover?: boolean;
+    pauseBetweenLoops?: number; // tiempo en segundos
 }
 
 const {
@@ -18,7 +19,8 @@ const {
     width = "100%",
     height = "100%",
     class: className = "",
-    hover = false
+    hover = false,
+    pauseBetweenLoops = 4 // por defecto 4 segundos
 } = Astro.props;
 
 // Generar un ID único para cada instancia
@@ -31,14 +33,12 @@ const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
 >
     <lottie-player
         src={src}
-        autoplay={autoplay}
-        loop={loop}
         speed={speed}
         style={`width: ${width}; height: ${height};`}
     ></lottie-player>
 </div>
 
-<script is:inline define:vars={{ uniqueId, hover, autoplay }}>
+<script is:inline define:vars={{ uniqueId, hover, autoplay, loop, pauseBetweenLoops }}>
     document.addEventListener('astro:page-load', () => {
         const container = document.getElementById(uniqueId);
         if (!container) return;
@@ -46,25 +46,66 @@ const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
         const player = container.querySelector('lottie-player');
         if (!player) return;
 
-        if (autoplay) {
-            player.play();
-        } else {
-            // Si no es autoplay, pausamos en el primer frame
-            player.addEventListener('ready', () => {
-                player.seek(0);
-                player.pause();
-            });
-        }
+        let isPlaying = false;
+        let isPaused = false;
+        let hoverTimeout;
+
+        const startAnimation = () => {
+            if (!isPlaying && !isPaused) {
+                isPlaying = true;
+                player.play();
+            }
+        };
+
+        const pauseAnimation = () => {
+            isPlaying = false;
+            player.pause();
+        };
+
+        const resetAnimation = () => {
+            player.seek(0);
+            isPaused = false;
+            if (!hover || (hover && container.matches(':hover'))) {
+                startAnimation();
+            }
+        };
+
+        const handleComplete = () => {
+            if (loop && !hover) {
+                isPlaying = false;
+                isPaused = true;
+                pauseAnimation();
+                setTimeout(resetAnimation, pauseBetweenLoops * 1000);
+            }
+        };
+
+        // Configurar eventos
+        player.addEventListener('complete', handleComplete);
+
+        player.addEventListener('ready', () => {
+            player.seek(0);
+            if (autoplay) {
+                startAnimation();
+            } else {
+                pauseAnimation();
+            }
+        });
 
         if (hover) {
             container.addEventListener('mouseenter', () => {
-                player.play();
+                if (hoverTimeout) {
+                    clearTimeout(hoverTimeout);
+                }
+                isPaused = false;
+                player.seek(0);
+                startAnimation();
             });
 
             container.addEventListener('mouseleave', () => {
-                // Pausar y volver al primer frame
-                player.pause();
-                player.seek(0);
+                hoverTimeout = setTimeout(() => {
+                    pauseAnimation();
+                    player.seek(0);
+                }, 100);
             });
         }
     });

@@ -1,6 +1,7 @@
 ---
 import ContactIcon from "@/components/icons/ContactIcon.astro";
 import ArrowRight from "@/components/icons/ArrowRight.astro";
+import LottieAnimation from "@/components/ui/LottieAnimation.astro";
 
 interface Props {
     class?: string;
@@ -18,7 +19,7 @@ const { class: className } = Astro.props;
             </p>
             <p class="text-primary-cyan">We'll get in touch soon to start working together!</p>
             <div class="hidden md:flex justify-center items-center mt-10">
-                <ContactIcon />
+                <LottieAnimation src="/lottie/mail-Lottie.json" width="350px" height="350px" pauseBetweenLoops={4} autoplay={true} speed={0.5}/>
             </div>
         </div>
 
