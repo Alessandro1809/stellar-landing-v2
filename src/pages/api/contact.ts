@@ -11,6 +11,8 @@ const transporter = nodemailer.createTransport({
 
 export const POST: APIRoute = async ({ request }) => {
     try {
+        console.log('Starting contact form submission...');
+        
         if (!import.meta.env.GMAIL_APP_PASSWORD) {
             console.error('GMAIL_APP_PASSWORD environment variable is not set');
             return new Response(
@@ -20,6 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
                 { status: 500 }
             );
         }
+        console.log('Environment variable check passed');
 
         const formData = await request.formData();
         
@@ -30,8 +33,11 @@ export const POST: APIRoute = async ({ request }) => {
         const asunto = formData.get('asunto')?.toString();
         const mensaje = formData.get('mensaje')?.toString();
 
+        console.log('Form data received:', { nombre, email, empresa, servicio, asunto });
+
         // Validaciones
         if (!nombre || !email || !servicio || !asunto || !mensaje) {
+            console.error('Missing required fields:', { nombre, email, servicio, asunto, mensaje });
             return new Response(
                 JSON.stringify({
                     message: 'All required fields must be completed'
@@ -39,10 +45,12 @@ export const POST: APIRoute = async ({ request }) => {
                 { status: 400 }
             );
         }
+        console.log('Required fields validation passed');
 
         // Validar email
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
+            console.error('Invalid email format:', email);
             return new Response(
                 JSON.stringify({
                     message: 'Invalid email format'
@@ -50,8 +58,19 @@ export const POST: APIRoute = async ({ request }) => {
                 { status: 400 }
             );
         }
+        console.log('Email format validation passed');
 
         try {
+            console.log('Attempting to send email...');
+            // Verificar la configuración del transportador
+            console.log('Transporter config:', {
+                service: 'gmail',
+                auth: {
+                    user: 'stellarteamcr@gmail.com',
+                    pass: import.meta.env.GMAIL_APP_PASSWORD ? 'set' : 'not set'
+                }
+            });
+
             // Enviar email
             await transporter.sendMail({
                 from: 'stellarteamcr@gmail.com',
@@ -160,6 +179,7 @@ export const POST: APIRoute = async ({ request }) => {
                     </html>
                 `
             });
+            console.log('Email sent successfully');
 
             return new Response(
                 JSON.stringify({ 
@@ -167,20 +187,24 @@ export const POST: APIRoute = async ({ request }) => {
                 }),
                 { status: 200 }
             );
-        } catch (emailError) {
-            console.error('Error sending email:', emailError);
+        } catch (emailError: any) {
+            console.error('Error sending email - Full error:', emailError);
+            console.error('Error sending email - Message:', emailError.message);
+            console.error('Error sending email - Stack:', emailError.stack);
             return new Response(
                 JSON.stringify({
-                    message: 'Error sending email'
+                    message: 'Error sending email: ' + emailError.message
                 }),
                 { status: 500 }
             );
         }
-    } catch (error) {
-        console.error('Error processing form:', error);
+    } catch (error: any) {
+        console.error('Error processing form - Full error:', error);
+        console.error('Error processing form - Message:', error.message);
+        console.error('Error processing form - Stack:', error.stack);
         return new Response(
             JSON.stringify({
-                message: 'Error processing form'
+                message: 'Error processing form: ' + error.message
             }),
             { status: 500 }
         );
