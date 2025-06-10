@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro';
 import { AnimatedGridPattern } from '../components/shadcn/AnimatedGridPattern';
 import ClientRouter from 'astro/components/ClientRouter.astro';
 import "@/styles/global.css";
-import { fade } from 'astro:transitions';
+
 ---
 
 <!doctype html>
@@ -14,10 +14,10 @@ import { fade } from 'astro:transitions';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<ClientRouter transition:animate="fade" />
+		<ClientRouter transition:animate="slide" />
 		<title>Stellar consultants</title>
 	</head>
-	<body class="bg-theme-deepblue relative">
+	<body class="bg-theme-deepblue relative ">
 		<div class="absolute inset-0 mask-radial-gradient h-[dvh] z-[-10]">
 			<AnimatedGridPattern
 				transition:persist={true}
@@ -31,7 +31,7 @@ import { fade } from 'astro:transitions';
 		</div>
 		
 		<Header />
-		<main class="container mx-auto max-w-7xl text-theme-white overflow-x-hidden px-4">
+		<main class="container mx-auto max-w-7xl text-theme-white overflow-x-hidden px-4 animate-fade-in">
 			<slot />
 		</main>
 		<Footer />
