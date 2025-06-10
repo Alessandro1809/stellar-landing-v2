@@ -12,7 +12,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     envDir: './',
     ssr: {
-      noExternal: ['react-dom/client']
+      noExternal: ['react-dom/client', 'react-dom/server']
     }
   },
 
