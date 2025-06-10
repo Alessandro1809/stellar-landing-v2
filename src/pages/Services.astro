@@ -2,13 +2,11 @@
 import Layout from "@/layouts/Layout.astro";
 import Hero from "@/components/Hero.astro";
 import FeaturedServices from "@/components/FeaturedServices.astro";
-import StellarServices from "@/components/icons/StellarServices.astro";
 import ServicesCallToAction from "@/components/ui/ServicesCallToAction.astro";
-import Testimonials from "@/components/Testimonials.astro";
 import CallToAction from "@/components/ui/CallToAction.astro";
 import { callToActionSections } from "@/types/CallToAction";
 import PlansCard from "@/components/PlansCard.astro";
-
+import FAQ from "@/components/FAQ.astro";
 
 const primaryButton = {
     text: "Contactanos",
@@ -40,6 +38,7 @@ const secondaryButton = {
             <FeaturedServices/>
         </div>
         
+        <FAQ />
         
        
 

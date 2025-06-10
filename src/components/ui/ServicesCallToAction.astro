@@ -11,6 +11,8 @@ interface ButtonProps {
 interface Props {
    
     introductoryText?: string;
+    mainTitle?: string;
+    highlightedTitle?: string;
     showCard?: boolean;
     titleCard?: string;
     subtitleCard?: string;
@@ -22,6 +24,8 @@ const {
    
     introductoryText = "At our company, we specialize in custom software development, professional web design, SEO strategies, and creative branding, designed to strengthen your brand's presence and growth. Our team combines cutting-edge technology and customized strategies to help you stand out in a competitive market. Whether it's creating robust digital platforms or improving your business's visibility, we're here to take your ideas to the next level. Transform your business with our comprehensive digital solutions!",
     showCard = true,
+    mainTitle = "How Stellar ",
+    highlightedTitle = "can help you?",
     titleCard = "Stellar adapts to your needs",
     subtitleCard = "Do you have a specific service or job in mind?",
     cardDescription = "We design customized solutions for businesses of all sizes. Whether you need a strategic plan or a customized project, we're here to help you drive your business growth. Contact us today and find out how we can take your company to the next level.",
@@ -61,8 +65,8 @@ const getButtonClasses = (variant: ButtonProps['variant']) => {
         
             <SplitTitle
             title={{
-                main: "How Stellar ",
-                highlighted: "can help you?"
+                main: mainTitle,
+                highlighted: highlightedTitle
             }}
             highlightedClassName="text-primary-cyan"
          />

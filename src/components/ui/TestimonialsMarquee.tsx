@@ -14,7 +14,7 @@ const opiniones: Service[] = [
     description: "Working with STELLAR has been an incredible experience. The website they developed completely exceeded our expectations. We are very satisfied with the final result and the professionalism of the entire team.",
   },
   {
-    name: "Dayana Samayoa",
+    name: "Dayana Hernández",
     company: "Founder - Chepeña da Fonda, Zarpe Catering Service",
     description: "The branding and website development work that STELLAR did for our restaurant was exceptional. They perfectly captured the essence of our brand and helped us stand out in a highly competitive market",
   },

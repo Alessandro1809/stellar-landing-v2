@@ -1,0 +1,129 @@
+---
+import PhoneIcon from "@/assets/icons/PhoneIcon.svg";
+import BrainIcon from "@/assets/icons/BrainIcon.svg";
+import ChartIcon from "@/assets/icons/ChartIcon.svg";
+import HammerIcon from "@/assets/icons/HammerIcon.svg";
+import ComputerIcon from "@/assets/icons/ComputerIcon.svg";
+import TestTubeIcon from "@/assets/icons/TestTubeIcon.svg";
+import GlobeIcon from "@/assets/icons/GlobeIcon.svg";
+import ChartUpIcon from "@/assets/icons/ChartUpIcon.svg";
+
+interface Step {
+    icon: any; // This allows both SVG imports and string paths
+    title: string;
+    description: string;
+}
+
+interface Props {
+    mainTitle?: string;
+    steps?: Step[];
+    ctaTitle?: string;
+    ctaButtonText?: string;
+    ctaButtonHref?: string;
+}
+
+const defaultSteps = [
+    {
+        icon: PhoneIcon,
+        title: "Initial Contact",
+        description: "Complete the brief form or click to schedule your first chat. We want to understand your challenges, goals, and vision."
+    },
+    {
+        icon: BrainIcon,
+        title: "Diagnosis & Alignment",
+        description: "We'll call or meet to dive deep into your ideas, define scope and requirements. We seek to understand your business and target audience."
+    },
+    {
+        icon: ChartIcon,
+        title: "Custom Proposal",
+        description: "We deliver a clear roadmap with deliverables, timeline, and budget. You decide if we move forward."
+    },
+    {
+        icon: HammerIcon,
+        title: "Initial Design",
+        description: "We design the first wireframes or visual prototypes. We gather your feedback to perfect them."
+    },
+    {
+        icon: ComputerIcon,
+        title: "Development in Action",
+        description: "We build your web solution or app as agreed. We progress through sprints, with reviews and quality control."
+    },
+    {
+        icon: TestTubeIcon,
+        title: "Testing & Adjustments",
+        description: "We test everything (functionality, usability, performance). You validate and approve the final version."
+    },
+    {
+        icon: GlobeIcon,
+        title: "Launch",
+        description: "We go live. We provide immediate technical support and guide you to master your new tool."
+    },
+    {
+        icon: ChartUpIcon,
+        title: "Continuous Follow-up",
+        description: "We monitor, optimize, and support you with improvements or new phases according to your needs."
+    }
+];
+
+const {
+    mainTitle = "How do we launch your project together?",
+    steps = defaultSteps,
+    ctaTitle = "Ready to start?",
+    ctaButtonText = "Schedule Kickoff",
+    ctaButtonHref = "#contact"
+} = Astro.props;
+
+import Button from "./Button.astro";
+---
+
+<section class="relative overflow-hidden mb-52">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+        <!-- Main Title -->
+        <h2 class="text-3xl h-16 md:text-4xl font-bold text-center mb-16 bg-gradient-to-r from-white to-primary-cyan bg-clip-text text-transparent">
+            {mainTitle}
+        </h2>
+
+        <!-- Steps Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {steps.map((step, index) => (
+                <div class="relative group">
+                    <div class="bg-gradient-to-br from-secondary-blue/10 to-primary-yellow/5 border border-primary-yellow/20 rounded-xl p-6 h-full transition-all duration-300 hover:border-primary-yellow/40 hover:shadow-[0_0_30px_rgba(242,255,65,0.1)]">
+                        <!-- Step Number -->
+                        <div class="absolute -top-4 -left-4 w-8 h-8 bg-primary-yellow rounded-full flex items-center justify-center text-secondary-blue font-bold">
+                            {index + 1}
+                        </div>
+                        
+                        <!-- Step Content -->
+                        <div class="pt-2">
+                            <span class="text-4xl mb-4 block bg-primary-cyan/5 w-fit p-2 rounded-full">
+                                {typeof step.icon === 'string' ? 
+                                    <img src={step.icon} alt={step.title} class="w-10 h-10" /> : 
+                                    <step.icon class="w-8 h-auto" />
+                                }
+                            </span>
+                            <h3 class="text-xl font-bold mb-3 text-white">{step.title}</h3>
+                            <p class="text-gray-400 text-sm">{step.description}</p>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <!-- Final CTA -->
+        <div class="text-center mt-16">
+            <h3 class="text-2xl font-bold mb-6 text-white">{ctaTitle}</h3>
+            <p class="text-gray-400 mb-8">
+                Click here to schedule your kickoff, and in less than 48 hours you'll have your proposal in hand.
+            </p>
+            <Button href={ctaButtonHref} class="inline-flex"
+            icon={true}
+            >
+                {ctaButtonText}
+            </Button>
+        </div>
+
+        <!-- Decorative Connection Lines -->
+        <div class="hidden lg:block absolute top-1/4 left-0 w-full h-0.5 bg-gradient-to-r from-primary-yellow/0 via-primary-yellow/20 to-primary-yellow/0 -z-10"/>
+        <div class="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-primary-yellow/0 via-primary-yellow/20 to-primary-yellow/0 -z-10"/>
+    </div>
+</section> 

@@ -1,0 +1,75 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import PricingCard from "@/components/PricingCard.astro";
+import CallToAction from "@/components/ui/CallToAction.astro";
+import ServicesCallToAction from "@/components/ui/ServicesCallToAction.astro";
+import { callToActionSectionsPricing } from "@/types/CallToAction";
+import CommingSoon from "@/components/ui/CommingSoon.astro";
+import ProcessSteps from "@/components/ui/ProcessSteps.astro";
+import FAQ from "@/components/FAQ.astro";
+
+const primaryButton = {
+    text: "Contact Us",
+    href: "#contact"
+}
+const secondaryButton = {
+    text: "Schedule a Call",
+    href: "#plans"
+}
+---
+
+<Layout>
+        <Hero 
+            title="Flexible Plans to Boost Your Business"
+            description="Take your business to the next level with our customized solutions."
+            primaryButton={primaryButton}
+            secondaryButton={secondaryButton}
+            showButtons={true}
+            showLogo={false}
+            colSpan={'full'}
+            justifyContent="center"
+            class="text-center"
+        />
+        
+        <div id="pricing" class="md:-mt-60 -mt-32">
+            <PricingCard />
+        </div>
+        <div class="pb-32 pt-20">
+            <ServicesCallToAction
+            titleCard="Stellar adapts to your needs"
+            subtitleCard="Do you have a specific service or job in mind?"
+            introductoryText="Discover the ideal solution for your business with our tailored software consulting services. At Stellar, we specialize in custom software development, system integration, digital transformation, and technical strategy. Whether you're a startup or an established enterprise, our expert team delivers scalable, high-impact solutions aligned with your objectives. Choose the consulting plan that fits your needs and start driving innovation and growth today."
+            mainTitle="How Stellar "
+            highlightedTitle="works to achieve your goals"
+            cardDescription="We design customized solutions for businesses of all sizes. Whether you need a strategic plan or a customized project, we're here to help you drive your business growth. Contact us today and find out how we can take your company to the next level."
+            buttons={
+                [
+                    {
+                        text: "Contact us",
+                        link: "/contact",
+                        variant: "primary"
+                    },
+                    {
+                        text: "Schedule a call",
+                        link: "/Pricing",
+                        variant: "secondary"
+                    },
+                    
+                ]
+            }
+            />
+        </div>
+        <ProcessSteps/>
+        <FAQ />
+        <div class="mt-32">
+            <CommingSoon />
+        </div>
+        <div class="pt-52">
+            <CallToAction
+            sections={callToActionSectionsPricing}
+            showDecorativeLogo={true}
+            />
+        </div>
+    
+</Layout>

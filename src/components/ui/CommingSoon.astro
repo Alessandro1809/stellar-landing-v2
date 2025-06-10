@@ -2,6 +2,8 @@
 import ArrowRight from "@/components/icons/ArrowRight.astro";
 import { Particles } from "@/components/shadcn/Particles";
 import { BorderBeam } from "@/components/shadcn/BorderBeam";
+import Button from "@/components/ui/Button.astro";
+
 
 interface Props {
     title?: {
@@ -16,6 +18,11 @@ interface Props {
         text: string;
         subtext: string;
     };
+}
+
+const secondaryButton = {
+    href: "/contact",
+    text: "Subscribe"
 }
 
 const {
@@ -85,12 +92,16 @@ const {
         <div class="flex flex-col items-center justify-center mt-8">
             <p class="text-white mb-4">Stay up to date with our news</p>
             <div class="flex gap-2">
-                <button class="px-6 py-2 bg-primary-yellow text-secondary-blue font-medium rounded-full hover:bg-primary-yellow/80 transition-all duration-300 flex items-center gap-2">
-                    Subscribe
-                    <span class="group-hover:translate-x-1 transition-transform duration-300">
-                        <ArrowRight />
-                    </span>
-                </button>
+                <Button 
+              href={secondaryButton.href}
+              variant="primary"
+              icon={true}
+            >
+              {secondaryButton.text}
+            </Button>
+        
+            
+            
             </div>
         </div>
     </div>

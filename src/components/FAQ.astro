@@ -1,0 +1,68 @@
+---
+import { Particles } from "@/components/shadcn/Particles";
+
+interface FAQ {
+    question: string;
+    answer: string;
+}
+
+const faqs: FAQ[] = [
+    {
+        question: "What is the development process for a project?",
+        answer: "Our process is divided into several stages: 1) Initial consultation and requirements analysis, 2) Proposal and planning, 3) Design and approval, 4) Development, 5) Testing and adjustments, 6) Launch and post-implementation support."
+    },
+    {
+        question: "How long does it take to develop a project?",
+        answer: "The timeline varies depending on project complexity. A basic website can take 2-4 weeks, while more complex projects like e-commerce or custom applications can take 2-6 months. We provide a detailed timeline during the planning phase."
+    },
+    {
+        question: "Do you offer maintenance after launch?",
+        answer: "Yes, all our plans include a post-launch technical support period. Additionally, we offer ongoing maintenance plans for updates, security, and performance optimization."
+    },
+    {
+        question: "Can I upgrade or scale my project in the future?",
+        answer: "Absolutely. We develop all our projects with scalability in mind. You can start with a basic plan and expand it as your business needs grow."
+    },
+    {
+        question: "What technologies do you use for development?",
+        answer: "We use modern and proven technologies like React, Next.js, Astro, Node.js, and other tools based on specific project requirements. We always choose the most suitable tech stack for each case."
+    },
+    {
+        question: "Do you include SEO optimization in the development?",
+        answer: "Yes, all our developments include basic SEO optimization. For projects that require a more comprehensive SEO strategy, we offer additional advanced SEO services and continuous monitoring."
+    }
+]
+
+---
+<section id="faq" class="py-20 relative">
+    <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+        
+        <div class="space-y-6">
+            {faqs.map((faq: FAQ) => (
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-secondary-blue/5 to-primary-yellow/20 border border-primary-yellow/30 rounded-lg p-6 hover:border-primary-yellow/50 transition-all duration-300">
+                        <h3 class="text-xl font-semibold mb-3 text-primary-cyan">
+                            {faq.question}
+                        </h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            {faq.answer}
+                        </p>
+                    </div>
+                    <Particles
+                        client:idle
+                        className="absolute inset-0 z-0"
+                        quantity={50}
+                        ease={100}
+                        color="#F2FF41"
+                        refresh
+                    />
+                </div>
+            ))}
+        </div>
+        
+        <p class="text-center mt-12 text-gray-400">
+            Do you have more questions? <a href="#contact" class="text-primary-cyan hover:text-primary-yellow transition-colors">Contact us</a>
+        </p>
+    </div>
+</section> 
