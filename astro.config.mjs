@@ -13,6 +13,11 @@ export default defineConfig({
     envDir: './',
     ssr: {
       noExternal: ['react-dom/client', 'react-dom/server']
+    },
+    resolve: {
+      alias: import.meta.env.PROD ? {
+        "react-dom/server": "react-dom/server.edge"
+      } : undefined
     }
   },
 
