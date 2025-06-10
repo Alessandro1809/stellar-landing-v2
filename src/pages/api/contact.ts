@@ -1,28 +1,56 @@
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'stellarteamcr@gmail.com',
-        pass: import.meta.env.GMAIL_APP_PASSWORD
+// Verificar la configuración antes de crear el transportador
+const createTransporter = () => {
+    try {
+        console.log('Creating mail transporter...');
+        if (!import.meta.env.GMAIL_APP_PASSWORD) {
+            throw new Error('GMAIL_APP_PASSWORD environment variable is not set');
+        }
+
+        return nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: 'stellarteamcr@gmail.com',
+                pass: import.meta.env.GMAIL_APP_PASSWORD
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+    } catch (error: any) {
+        console.error('Error creating transporter:', error);
+        throw error;
     }
-});
+};
 
 export const POST: APIRoute = async ({ request }) => {
+    let transporter;
+
     try {
         console.log('Starting contact form submission...');
         
-        if (!import.meta.env.GMAIL_APP_PASSWORD) {
-            console.error('GMAIL_APP_PASSWORD environment variable is not set');
+        // Crear el transportador
+        try {
+            transporter = createTransporter();
+            console.log('Transporter created successfully');
+        } catch (error: any) {
+            console.error('Failed to create transporter:', error);
             return new Response(
                 JSON.stringify({
-                    message: 'Server configuration error'
+                    message: 'Server configuration error: ' + error.message
                 }),
-                { status: 500 }
+                { 
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
         }
-        console.log('Environment variable check passed');
 
         const formData = await request.formData();
         
@@ -42,7 +70,12 @@ export const POST: APIRoute = async ({ request }) => {
                 JSON.stringify({
                     message: 'All required fields must be completed'
                 }),
-                { status: 400 }
+                { 
+                    status: 400,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
         }
         console.log('Required fields validation passed');
@@ -55,21 +88,27 @@ export const POST: APIRoute = async ({ request }) => {
                 JSON.stringify({
                     message: 'Invalid email format'
                 }),
-                { status: 400 }
+                { 
+                    status: 400,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
         }
         console.log('Email format validation passed');
 
         try {
             console.log('Attempting to send email...');
-            // Verificar la configuración del transportador
-            console.log('Transporter config:', {
-                service: 'gmail',
-                auth: {
-                    user: 'stellarteamcr@gmail.com',
-                    pass: import.meta.env.GMAIL_APP_PASSWORD ? 'set' : 'not set'
-                }
-            });
+
+            // Verificar conexión SMTP
+            try {
+                await transporter.verify();
+                console.log('SMTP connection verified successfully');
+            } catch (verifyError: any) {
+                console.error('SMTP verification failed:', verifyError);
+                throw new Error('Failed to connect to email server: ' + verifyError.message);
+            }
 
             // Enviar email
             await transporter.sendMail({
@@ -185,7 +224,12 @@ export const POST: APIRoute = async ({ request }) => {
                 JSON.stringify({ 
                     message: 'Message sent successfully'
                 }),
-                { status: 200 }
+                { 
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
         } catch (emailError: any) {
             console.error('Error sending email - Full error:', emailError);
@@ -195,7 +239,12 @@ export const POST: APIRoute = async ({ request }) => {
                 JSON.stringify({
                     message: 'Error sending email: ' + emailError.message
                 }),
-                { status: 500 }
+                { 
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
         }
     } catch (error: any) {
@@ -206,7 +255,12 @@ export const POST: APIRoute = async ({ request }) => {
             JSON.stringify({
                 message: 'Error processing form: ' + error.message
             }),
-            { status: 500 }
+            { 
+                status: 500,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
         );
     }
 }; 
