@@ -10,14 +10,19 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
-    envDir: './'
+    envDir: './',
+    ssr: {
+      noExternal: ['react-dom/client']
+    }
   },
 
-  integrations: [react()],
+  integrations: [
+    react({
+      include: ['**/react/*']
+    })
+  ],
 
   output: 'server',
 
-  adapter: cloudflare({
-    mode: 'directory'
-  })
+  adapter: cloudflare()
 });
