@@ -1,0 +1,46 @@
+---
+import Button from "./Button.astro";
+import ScheduleModal from "./ScheduleModal.astro";
+import ArrowRight from "@/components/icons/ArrowRight.astro";
+interface Props {
+    showIcon?: boolean;
+    class?: string;
+    variant?: 'primary' | 'secondary';
+}
+
+const { 
+    class: className = '',
+    variant = 'primary',
+    showIcon = false
+} = Astro.props;
+
+---
+
+<div class="relative group">
+    <Button
+        href="#"
+        variant={variant}
+        class={className}
+        id="open-schedule-modal"
+        icon={showIcon}
+    >
+        <slot />
+        
+    </Button>
+    <ScheduleModal />
+</div>
+
+<script>
+    function initScheduleButton() {
+        const button = document.getElementById('open-schedule-modal');
+        const modal = document.getElementById('schedule-modal');
+        
+        button?.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal?.classList.remove('opacity-0', 'pointer-events-none');
+        });
+    }
+
+    // Initialize on page load
+    document.addEventListener('astro:page-load', initScheduleButton);
+</script> 

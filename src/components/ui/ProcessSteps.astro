@@ -7,6 +7,7 @@ import ComputerIcon from "@/assets/icons/ComputerIcon.svg";
 import TestTubeIcon from "@/assets/icons/TestTubeIcon.svg";
 import GlobeIcon from "@/assets/icons/GlobeIcon.svg";
 import ChartUpIcon from "@/assets/icons/ChartUpIcon.svg";
+import ScheduleButton from "@/components/ui/ScheduleButton.astro";
 
 interface Step {
     icon: any; // This allows both SVG imports and string paths
@@ -115,11 +116,10 @@ import Button from "./Button.astro";
             <p class="text-gray-400 mb-8">
                 Click here to schedule your kickoff, and in less than 48 hours you'll have your proposal in hand.
             </p>
-            <Button href={ctaButtonHref} class="inline-flex"
-            icon={true}
-            >
-                {ctaButtonText}
-            </Button>
+        <ScheduleButton variant="primary" class="w-fit mx-auto" showIcon={true} 
+        >
+            {ctaButtonText}
+        </ScheduleButton>
         </div>
 
         <!-- Decorative Connection Lines -->

@@ -5,13 +5,15 @@ interface Props {
   variant?: 'primary' | 'secondary';
   class?: string;
   icon?: boolean;
+  id?: string;
 }
 
 const { 
   href, 
   variant = 'primary',
   class: className = '',
-  icon = false
+  icon = false,
+  id
 } = Astro.props;
 
 const baseStyles = "px-6 py-3 font-semibold rounded-full transition-colors group flex items-center gap-2";
@@ -28,6 +30,7 @@ const variants = {
     variants[variant],
     className
   ]}
+  id={id}
 >
   <slot />
   {icon && <span class="group-hover:translate-x-1 transition-transform duration-300"><ArrowRight /></span>}

@@ -1,0 +1,274 @@
+---
+import Button from "./Button.astro";
+
+interface Props {
+    isOpen?: boolean;
+}
+
+const { 
+    isOpen = false,
+} = Astro.props;
+
+// Calcular fechas mínima y máxima permitidas
+const today = new Date();
+const minDate = new Date(today);
+minDate.setDate(today.getDate() + 2); // 2 días después de hoy
+
+const formatDateForInput = (date: Date) => {
+    return date.toISOString().slice(0, 16); // Formato YYYY-MM-DDTHH:mm
+};
+---
+
+<!-- Toast Notification -->
+<div 
+    id="toast-notification" 
+    class="fixed top-4 right-4 z-50 transform translate-x-full transition-all duration-300 opacity-0"
+>
+    <div class="flex items-center p-4 rounded-lg shadow bg-theme-deepblue border border-primary-yellow/30">
+        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+            <div id="toast-icon"></div>
+        </div>
+        <div class="ml-3 text-sm font-normal" id="toast-message"></div>
+        <button 
+            type="button" 
+            class="ml-4 -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 text-gray-400 hover:text-gray-900 focus:ring-2 focus:ring-gray-300"
+            id="close-toast"
+        >
+            <span class="sr-only">Close</span>
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div 
+    id="schedule-modal" 
+    class:list={[
+        "fixed inset-0 bg-black/50 flex items-center justify-center z-40 transition-opacity duration-300",
+        isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+    ]}
+>
+    <div class="bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-6 w-full max-w-md mx-4 relative">
+        <button 
+            class="absolute top-4 right-4 text-gray-400 hover:text-white"
+            id="close-modal"
+            type="button"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <h3 class="text-2xl font-bold text-primary-cyan mb-6">Schedule a Meeting</h3>
+
+        <form id="schedule-form" class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
+                <input 
+                    type="text" 
+                    name="nombre"
+                    class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow"
+                    required
+                    placeholder="John Doe"
+                />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Your Email</label>
+                <input 
+                    type="email" 
+                    name="email"
+                    class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow"
+                    required
+                    placeholder="your@email.com"
+                />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Company (Optional)</label>
+                <input 
+                    type="text" 
+                    name="empresa"
+                    class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow"
+                    placeholder="Your Company"
+                />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Select Date and Time</label>
+                <input 
+                    type="datetime-local" 
+                    id="meeting-datetime"
+                    name="meeting-datetime"
+                    min={formatDateForInput(minDate)}
+                    class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow"
+                    required
+                />
+                <p class="text-xs text-gray-400 mt-1">Meetings must be scheduled at least 2 days in advance</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Duration</label>
+                <div class="grid grid-cols-3 gap-3">
+                    {[15, 30, 45].map((duration) => (
+                        <label class="relative">
+                            <input 
+                                type="radio" 
+                                name="duration" 
+                                value={duration}
+                                class="peer sr-only"
+                                required
+                            />
+                            <div class="text-center p-3 border border-primary-yellow/30 rounded-lg cursor-pointer peer-checked:bg-primary-yellow/20 peer-checked:border-primary-yellow hover:bg-white/5">
+                                {duration} min
+                            </div>
+                        </label>
+                    ))}
+                </div>
+            </div>
+
+            <input type="hidden" name="servicio" value="Meeting Request" />
+            <input type="hidden" name="asunto" value="New Meeting Request" />
+
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Message (Optional)</label>
+                <textarea 
+                    name="mensaje"
+                    rows="3"
+                    class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow resize-none"
+                    placeholder="Add any additional information..."
+                ></textarea>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button 
+                    type="button"
+                    class="px-6 py-2 border-2 border-primary-yellow text-white hover:bg-white/10 font-semibold rounded-full transition-colors"
+                    id="cancel-schedule"
+                >
+                    Cancel
+                </button>
+                <button 
+                    type="submit"
+                    class="px-6 py-2 bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90 font-semibold rounded-full transition-colors"
+                    id="confirm-schedule"
+                >
+                    Schedule Meeting
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script is:inline>
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast-notification');
+        const toastMessage = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+        
+        // Set message
+        if (toastMessage) toastMessage.textContent = message;
+        
+        // Set icon based on type
+        if (toastIcon) {
+            if (type === 'success') {
+                toastIcon.innerHTML = `
+                    <svg class="w-5 h-5 text-primary-yellow" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>`;
+            } else {
+                toastIcon.innerHTML = `
+                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>`;
+            }
+        }
+        
+        // Show toast
+        if (toast) {
+            toast.classList.remove('translate-x-full', 'opacity-0');
+            toast.classList.add('translate-x-0', 'opacity-100');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hideToast();
+            }, 5000);
+        }
+    }
+    
+    function hideToast() {
+        const toast = document.getElementById('toast-notification');
+        if (toast) {
+            toast.classList.add('translate-x-full', 'opacity-0');
+            toast.classList.remove('translate-x-0', 'opacity-100');
+        }
+    }
+
+    function initScheduleModal() {
+        const modal = document.getElementById('schedule-modal');
+        const closeBtn = document.getElementById('close-modal');
+        const cancelBtn = document.getElementById('cancel-schedule');
+        const form = document.getElementById('schedule-form');
+        const closeToastBtn = document.getElementById('close-toast');
+        
+        // Close modal function
+        const closeModal = () => {
+            modal?.classList.add('opacity-0', 'pointer-events-none');
+            if (form) form.reset();
+        };
+
+        // Add event listeners
+        closeBtn?.addEventListener('click', closeModal);
+        cancelBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal();
+        });
+        
+        closeToastBtn?.addEventListener('click', hideToast);
+
+        // Handle form submission
+        form?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const datetime = document.getElementById('meeting-datetime')?.value || '';
+            const duration = document.querySelector('input[name="duration"]:checked')?.value || '';
+
+            // Add meeting details to the message
+            const meetingDetails = `
+Meeting Details:
+Date and Time: ${new Date(datetime).toLocaleString()}
+Duration: ${duration} minutes
+
+Additional Information:
+${formData.get('mensaje') || 'No additional message provided.'}
+            `.trim();
+
+            formData.set('mensaje', meetingDetails);
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast('Meeting request sent successfully!', 'success');
+                    closeModal();
+                } else {
+                    showToast(data.message || 'Error sending meeting request', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error sending meeting request', 'error');
+            }
+        });
+    }
+
+    // Initialize on page load
+    document.addEventListener('astro:page-load', initScheduleModal);
+</script> 
