@@ -5,6 +5,8 @@ import LinkedIn from "@/components/icons/LinkedIn.astro";
 import Twitter from "@/components/icons/Twitter.astro";
 import GitHub from "@/components/icons/GitHub.astro";
 import ArrowRight from "@/components/icons/ArrowRight.astro";
+import LottieAnimation from "@/components/ui/LottieAnimation.astro";
+
 interface FooterLink {
     text: string;
     href: string;
@@ -47,24 +49,60 @@ const sections: FooterSection[] = [
 
 const socialLinks = [
     { 
-        icon: Instagram,
+        icon: LottieAnimation,
+        props: {
+            src: "/lottie/Instagram-Lottie.json",
+            width: "48px",
+            height: "48px",
+            hover: true,
+            speed: 1,
+            loop: false,
+            class: "transition-transform hover:scale-110"
+        },
         href: "https://instagram.com",
         label: "Follow us on Instagram"
     },
     { 
-        icon: LinkedIn,
+        icon: LottieAnimation,
+        props: {
+            src: "/lottie/LinkdedIn-Lottie.json",
+            width: "48px",
+            height: "48px",
+            hover: true,
+            speed: 1,
+            loop: false,
+            class: "transition-transform hover:scale-110"
+        },
         href: "https://linkedin.com",
         label: "Connect with us on LinkedIn"
     },
     { 
-        icon: GitHub,
-        href: "https://github.com",
-        label: "Check our GitHub"
-    },
-    { 
-        icon: Twitter,
+        icon: LottieAnimation,
+        props: {
+            src: "/lottie/Twitter-Lottie.json",
+            width: "48px",
+            height: "48px",
+            hover: true,
+            speed: 1,
+            loop: false,
+            class: "transition-transform hover:scale-110"
+        },
         href: "https://twitter.com",
         label: "Follow us on Twitter"
+    },
+    { 
+        icon: LottieAnimation,
+        props: {
+            src: "/lottie/facebook-Lottie.json",
+            width: "48px",
+            height: "48px",
+            hover: true,
+            speed: 1,
+            loop: false,
+            class: "transition-transform hover:scale-110"
+        },
+        href: "https://facebook.com",
+        label: "Follow us on Facebook"
     }
 ];
 ---
@@ -128,8 +166,8 @@ const socialLinks = [
             </p>
 
             <!-- Social links -->
-            <div class="flex items-center gap-6">
-                {socialLinks.map(({ icon: Icon, href, label }) => (
+            <div class="flex items-center gap-2">
+                {socialLinks.map(({ icon: Icon, props, href, label }) => (
                     <a 
                         href={href}
                         target="_blank"
@@ -137,7 +175,7 @@ const socialLinks = [
                         class="text-gray-400 hover:text-primary-yellow transition-colors"
                         aria-label={label}
                     >
-                        <Icon class="w-auto h-12" />
+                        <Icon {...props} />
                     </a>
                 ))}
             </div>

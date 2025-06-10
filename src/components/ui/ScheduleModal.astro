@@ -3,10 +3,12 @@ import Button from "./Button.astro";
 
 interface Props {
     isOpen?: boolean;
+    buttonId: string;
 }
 
 const { 
     isOpen = false,
+    buttonId
 } = Astro.props;
 
 // Calcular fechas mínima y máxima permitidas
@@ -44,7 +46,7 @@ const formatDateForInput = (date: Date) => {
 
 <!-- Modal -->
 <div 
-    id="schedule-modal" 
+    data-button-id={buttonId}
     class:list={[
         "fixed inset-0 bg-black/50 flex items-center justify-center z-40 transition-opacity duration-300",
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -53,8 +55,8 @@ const formatDateForInput = (date: Date) => {
     <div class="bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-6 w-full max-w-md mx-4 relative">
         <button 
             class="absolute top-4 right-4 text-gray-400 hover:text-white"
-            id="close-modal"
             type="button"
+            data-close-modal
         >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -63,7 +65,7 @@ const formatDateForInput = (date: Date) => {
 
         <h3 class="text-2xl font-bold text-primary-cyan mb-6">Schedule a Meeting</h3>
 
-        <form id="schedule-form" class="space-y-6">
+        <form class="space-y-6" data-schedule-form>
             <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
                 <input 
@@ -100,7 +102,6 @@ const formatDateForInput = (date: Date) => {
                 <label class="block text-sm font-medium text-gray-300 mb-2">Select Date and Time</label>
                 <input 
                     type="datetime-local" 
-                    id="meeting-datetime"
                     name="meeting-datetime"
                     min={formatDateForInput(minDate)}
                     class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow"
@@ -146,14 +147,13 @@ const formatDateForInput = (date: Date) => {
                 <button 
                     type="button"
                     class="px-6 py-2 border-2 border-primary-yellow text-white hover:bg-white/10 font-semibold rounded-full transition-colors"
-                    id="cancel-schedule"
+                    data-cancel-schedule
                 >
                     Cancel
                 </button>
                 <button 
                     type="submit"
                     class="px-6 py-2 bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90 font-semibold rounded-full transition-colors"
-                    id="confirm-schedule"
                 >
                     Schedule Meeting
                 </button>
@@ -162,8 +162,8 @@ const formatDateForInput = (date: Date) => {
     </div>
 </div>
 
-<script is:inline>
-    function showToast(message, type = 'success') {
+<script>
+    function showToast(message: string, type: 'success' | 'error' = 'success') {
         const toast = document.getElementById('toast-notification');
         const toastMessage = document.getElementById('toast-message');
         const toastIcon = document.getElementById('toast-icon');
@@ -207,68 +207,74 @@ const formatDateForInput = (date: Date) => {
     }
 
     function initScheduleModal() {
-        const modal = document.getElementById('schedule-modal');
-        const closeBtn = document.getElementById('close-modal');
-        const cancelBtn = document.getElementById('cancel-schedule');
-        const form = document.getElementById('schedule-form');
+        // Seleccionar todos los modales
+        const modals = document.querySelectorAll<HTMLElement>('[data-button-id]');
         const closeToastBtn = document.getElementById('close-toast');
-        
-        // Close modal function
-        const closeModal = () => {
-            modal?.classList.add('opacity-0', 'pointer-events-none');
-            if (form) form.reset();
-        };
-
-        // Add event listeners
-        closeBtn?.addEventListener('click', closeModal);
-        cancelBtn?.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeModal();
-        });
         
         closeToastBtn?.addEventListener('click', hideToast);
 
-        // Handle form submission
-        form?.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        modals.forEach(modal => {
+            const closeBtn = modal.querySelector<HTMLButtonElement>('[data-close-modal]');
+            const cancelBtn = modal.querySelector<HTMLButtonElement>('[data-cancel-schedule]');
+            const form = modal.querySelector<HTMLFormElement>('[data-schedule-form]');
             
-            const formData = new FormData(form);
-            const datetime = document.getElementById('meeting-datetime')?.value || '';
-            const duration = document.querySelector('input[name="duration"]:checked')?.value || '';
+            // Close modal function
+            const closeModal = () => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                if (form) form.reset();
+            };
 
-            // Add meeting details to the message
-            const meetingDetails = `
+            // Add event listeners
+            closeBtn?.addEventListener('click', closeModal);
+            cancelBtn?.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+
+            // Handle form submission
+            form?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const datetime = (form.querySelector<HTMLInputElement>('[name="meeting-datetime"]')?.value) || '';
+                const duration = (form.querySelector<HTMLInputElement>('input[name="duration"]:checked')?.value) || '';
+
+                // Add meeting details to the message
+                const meetingDetails = `
 Meeting Details:
 Date and Time: ${new Date(datetime).toLocaleString()}
 Duration: ${duration} minutes
 
 Additional Information:
 ${formData.get('mensaje') || 'No additional message provided.'}
-            `.trim();
+                `.trim();
 
-            formData.set('mensaje', meetingDetails);
+                formData.set('mensaje', meetingDetails);
 
-            try {
-                const response = await fetch('/api/contact', {
-                    method: 'POST',
-                    body: formData
-                });
+                try {
+                    const response = await fetch('/api/contact', {
+                        method: 'POST',
+                        body: formData
+                    });
 
-                const data = await response.json();
+                    const data = await response.json();
 
-                if (response.ok) {
-                    showToast('Meeting request sent successfully!', 'success');
-                    closeModal();
-                } else {
-                    showToast(data.message || 'Error sending meeting request', 'error');
+                    if (response.ok) {
+                        showToast('Meeting request sent successfully!', 'success');
+                        closeModal();
+                    } else {
+                        showToast(data.message || 'Error sending meeting request', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Error sending meeting request', 'error');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('Error sending meeting request', 'error');
-            }
+            });
         });
     }
 
-    // Initialize on page load
+    // Initialize on page load and after navigation
     document.addEventListener('astro:page-load', initScheduleModal);
+    // Also initialize immediately in case we're not using navigation
+    initScheduleModal();
 </script> 

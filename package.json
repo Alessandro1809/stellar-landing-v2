@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
+    "@lottiefiles/lottie-player": "^2.0.12",
     "@tailwindcss/vite": "^4.1.8",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19.1.6",

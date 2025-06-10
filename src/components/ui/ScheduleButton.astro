@@ -14,6 +14,8 @@ const {
     showIcon = false
 } = Astro.props;
 
+// Generar un ID único para cada instancia del botón
+const uniqueId = `schedule-button-${Math.random().toString(36).substring(2, 11)}`;
 ---
 
 <div class="relative group">
@@ -21,23 +23,27 @@ const {
         href="#"
         variant={variant}
         class={className}
-        id="open-schedule-modal"
+        id={uniqueId}
         icon={showIcon}
     >
         <slot />
-        
     </Button>
-    <ScheduleModal />
+    <ScheduleModal buttonId={uniqueId} />
 </div>
 
 <script>
     function initScheduleButton() {
-        const button = document.getElementById('open-schedule-modal');
-        const modal = document.getElementById('schedule-modal');
+        // Seleccionar todos los botones de programación
+        const buttons = document.querySelectorAll('[id^="schedule-button-"]');
         
-        button?.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal?.classList.remove('opacity-0', 'pointer-events-none');
+        buttons.forEach(button => {
+            const buttonId = button.id;
+            const modal = document.querySelector(`[data-button-id="${buttonId}"]`);
+            
+            button?.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal?.classList.remove('opacity-0', 'pointer-events-none');
+            });
         });
     }
 

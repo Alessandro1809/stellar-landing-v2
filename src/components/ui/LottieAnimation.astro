@@ -1,0 +1,75 @@
+---
+interface Props {
+    src: string;
+    autoplay?: boolean;
+    loop?: boolean;
+    speed?: number;
+    width?: string;
+    height?: string;
+    class?: string;
+    hover?: boolean;
+}
+
+const {
+    src,
+    autoplay = false,
+    loop = true,
+    speed = 1,
+    width = "100%",
+    height = "100%",
+    class: className = "",
+    hover = false
+} = Astro.props;
+
+// Generar un ID único para cada instancia
+const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
+---
+
+<div 
+    id={uniqueId}
+    class={className}
+>
+    <lottie-player
+        src={src}
+        autoplay={autoplay}
+        loop={loop}
+        speed={speed}
+        style={`width: ${width}; height: ${height};`}
+    ></lottie-player>
+</div>
+
+<script is:inline define:vars={{ uniqueId, hover, autoplay }}>
+    document.addEventListener('astro:page-load', () => {
+        const container = document.getElementById(uniqueId);
+        if (!container) return;
+
+        const player = container.querySelector('lottie-player');
+        if (!player) return;
+
+        if (autoplay) {
+            player.play();
+        } else {
+            // Si no es autoplay, pausamos en el primer frame
+            player.addEventListener('ready', () => {
+                player.seek(0);
+                player.pause();
+            });
+        }
+
+        if (hover) {
+            container.addEventListener('mouseenter', () => {
+                player.play();
+            });
+
+            container.addEventListener('mouseleave', () => {
+                // Pausar y volver al primer frame
+                player.pause();
+                player.seek(0);
+            });
+        }
+    });
+</script>
+
+<script>
+    import "@lottiefiles/lottie-player";
+</script> 
