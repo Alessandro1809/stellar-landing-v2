@@ -1,15 +1,16 @@
 ---
 import SplitTitle from '../SplitTitle.astro';
-import  StellarServices  from '@/components/icons/StellarServices.astro';
+import StellarServices from '@/components/icons/StellarServices.astro';
+import ActionButtons from './ActionButtons.astro';
 
 interface ButtonProps {
     text: string;
-    link: string;
+    link?: string;
     variant: 'primary' | 'secondary';
+    isMeetingButton?: boolean;
 }
 
 interface Props {
-   
     introductoryText?: string;
     mainTitle?: string;
     highlightedTitle?: string;
@@ -21,7 +22,6 @@ interface Props {
 }
 
 const {
-   
     introductoryText = "At our company, we specialize in custom software development, professional web design, SEO strategies, and creative branding, designed to strengthen your brand's presence and growth. Our team combines cutting-edge technology and customized strategies to help you stand out in a competitive market. Whether it's creating robust digital platforms or improving your business's visibility, we're here to take your ideas to the next level. Transform your business with our comprehensive digital solutions!",
     showCard = true,
     mainTitle = "How Stellar ",
@@ -60,51 +60,39 @@ const getButtonClasses = (variant: ButtonProps['variant']) => {
 ---
 
 <section class="w-full pb-12 md:pb-32">
-  
-        
-        
-            <SplitTitle
-            title={{
-                main: mainTitle,
-                highlighted: highlightedTitle
-            }}
-            highlightedClassName="text-primary-cyan"
-         />
-        
-  
+    <SplitTitle
+        title={{
+            main: mainTitle,
+            highlighted: highlightedTitle
+        }}
+        highlightedClassName="text-primary-cyan"
+    />
    
-        <p class="text-lg md:text-xl text-gray-200 mb-12 ">
-            {introductoryText}
-        </p>
-        
-  
-        {showCard && (
-            <div class="bg-gradient-to-br from-secondary-blue/10 to-primary-cyan/30 p-8 rounded-xl border border-primary-cyan/20">
-                <div class="space-y-4">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white">
-                        {titleCard}
-                    </h2>
-                    <h3 class="text-xl text-primary-cyan">
-                        {subtitleCard}
-                    </h3>
-                    <p class="text-gray-200">
-                        {cardDescription}
-                    </p>
-                    
-                    <div class="flex flex-wrap gap-4 mt-8">
-                        {buttons.map(button => (
-                            <a
-                                href={button.link}
-                                class={getButtonClasses(button.variant)}
-                            >
-                                {button.text}
-                            </a>
-                        ))}
-                    </div>
+    <p class="text-lg md:text-xl text-gray-200 mb-12">
+        {introductoryText}
+    </p>
+    
+    {showCard && (
+        <div class="bg-gradient-to-br from-secondary-blue/10 to-primary-cyan/30 p-8 rounded-xl border border-primary-cyan/20">
+            <div class="space-y-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">
+                    {titleCard}
+                </h2>
+                <h3 class="text-xl text-primary-cyan">
+                    {subtitleCard}
+                </h3>
+                <p class="text-gray-200">
+                    {cardDescription}
+                </p>
+                
+                <div class="flex flex-wrap gap-4 mt-8">
+                    {buttons.map(button => (
+                        <ActionButtons {...button} />
+                    ))}
                 </div>
             </div>
-        )}
-    
+        </div>
+    )}
 </section>
 
 

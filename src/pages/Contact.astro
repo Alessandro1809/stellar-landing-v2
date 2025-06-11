@@ -5,9 +5,19 @@ import FormContact from "@/components/FormContact.astro";
 import CommingSoon from "@/components/ui/CommingSoon.astro";
 import CallToAction from "@/components/ui/CallToAction.astro";
 import { callToActionSectionsContact } from "@/types/CallToAction";
+
+type ButtonVariant = 'primary' | 'secondary';
+
 const primaryButton = {
     text: "Explore our plans",
-    href: "/Pricing"
+    href: "/Pricing",
+    variant: "primary" as ButtonVariant
+}
+const secondaryButton = {
+    text: "Schedule a call",
+    href: "#",
+    isMeetingButton: true,
+    variant: "secondary" as ButtonVariant
 }
 
 ---
@@ -17,8 +27,9 @@ const primaryButton = {
             title="Digital Solutions that Transform Your Business"
             description="Contact us today and start growing with digital strategies designed for your success!"
             primaryButton={primaryButton}
+            secondaryButton={secondaryButton}
             showButton1={true}
-            showButton2={false}
+            showButton2={true}
             showLogo={false}
             colSpan={'full'}
             justifyContent="center"

@@ -1,0 +1,62 @@
+---
+import Button from "./Button.astro";
+import ScheduleModal from "./ScheduleModal.astro";
+
+interface Props {
+    variant?: "primary" | "secondary";
+    class?: string;
+    showIcon?: boolean;
+}
+
+const { 
+    variant = "primary",
+    class: className,
+    showIcon = false
+} = Astro.props;
+
+const buttonId = crypto.randomUUID();
+---
+<div>
+    <button
+        type="button"
+        data-meeting-target={buttonId}
+        class:list={[
+            "w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-full font-medium transition-colors duration-300",
+            variant === "primary" 
+                ? "bg-primary-cyan text-theme-deepblue hover:bg-primary-cyan/90" 
+                : "bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90",
+            className
+        ]}
+    >
+        <slot />
+        {showIcon && (
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        )}
+    </button>
+
+    <ScheduleModal buttonId={buttonId} />
+</div>
+
+<script>
+    function initMeetingButtons() {
+        const buttons = document.querySelectorAll<HTMLButtonElement>('[data-meeting-target]');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modalId = button.getAttribute('data-meeting-target');
+                if (!modalId) return;
+
+                const modal = document.querySelector(`[data-button-id="${modalId}"]`);
+                if (!modal) return;
+
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            });
+        });
+    }
+
+    // Inicializar en carga de página y después de navegación
+    document.addEventListener('astro:page-load', initMeetingButtons);
+    initMeetingButtons();
+</script> 

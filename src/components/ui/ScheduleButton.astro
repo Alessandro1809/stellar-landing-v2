@@ -1,52 +1,71 @@
 ---
 import Button from "./Button.astro";
-import ScheduleModal from "./ScheduleModal.astro";
-import ArrowRight from "@/components/icons/ArrowRight.astro";
+import PricingModal from "./PricingModal.astro";
+
 interface Props {
-    showIcon?: boolean;
+    variant?: "primary" | "secondary";
     class?: string;
-    variant?: 'primary' | 'secondary';
+    showIcon?: boolean;
 }
 
 const { 
-    class: className = '',
-    variant = 'primary',
+    variant = "primary",
+    class: className,
     showIcon = false
 } = Astro.props;
 
-// Generar un ID único para cada instancia del botón
-const uniqueId = `schedule-button-${Math.random().toString(36).substring(2, 11)}`;
+const buttonId = crypto.randomUUID();
 ---
 
-<div class="relative group">
-    <Button
-        href="#"
-        variant={variant}
-        class={className}
-        id={uniqueId}
-        icon={showIcon}
+<div>
+    <button
+        type="button"
+        data-pricing-target={buttonId}
+        class:list={[
+            "w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-full font-medium transition-colors duration-300 hover:cursor-pointer",
+            variant === "primary" 
+                ? "bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/80" 
+                : "bg-secondary-blue/30 text-white hover:bg-secondary-blue/40",
+            className
+        ]}
     >
         <slot />
-    </Button>
-    <ScheduleModal buttonId={uniqueId} />
+        {showIcon && (
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        )}
+    </button>
+
+    <PricingModal buttonId={buttonId} />
 </div>
 
 <script>
-    function initScheduleButton() {
-        // Seleccionar todos los botones de programación
-        const buttons = document.querySelectorAll('[id^="schedule-button-"]');
+    function initScheduleButtons() {
+        const buttons = document.querySelectorAll<HTMLButtonElement>('[data-pricing-target]');
         
         buttons.forEach(button => {
-            const buttonId = button.id;
-            const modal = document.querySelector(`[data-button-id="${buttonId}"]`);
-            
-            button?.addEventListener('click', (e) => {
-                e.preventDefault();
-                modal?.classList.remove('opacity-0', 'pointer-events-none');
+            button.addEventListener('click', () => {
+                const modalId = button.getAttribute('data-pricing-target');
+                if (!modalId) return;
+
+                // Obtener información del plan
+                const planCard = button.closest('.relative');
+                if (!planCard) return;
+
+                const planName = planCard.querySelector('h3')?.textContent || 'Selected Plan';
+                const planFeatures = Array.from(planCard.querySelectorAll('li span:last-child'))
+                    .map(span => span.textContent)
+                    .filter(Boolean)
+                    .join('\n- ');
+
+                // Abrir el modal con la información del plan
+                (window as any).openPricingModal(planName, planFeatures);
             });
         });
     }
 
-    // Initialize on page load
-    document.addEventListener('astro:page-load', initScheduleButton);
+    // Inicializar en carga de página y después de navegación
+    document.addEventListener('astro:page-load', initScheduleButtons);
+    initScheduleButtons();
 </script> 

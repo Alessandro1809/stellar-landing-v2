@@ -9,13 +9,17 @@ import CommingSoon from "@/components/ui/CommingSoon.astro";
 import ProcessSteps from "@/components/ui/ProcessSteps.astro";
 import FAQ from "@/components/FAQ.astro";
 
+type ButtonVariant = 'primary' | 'secondary';
+
 const primaryButton = {
     text: "Contact Us",
-    href: "/Contact"
+    href: "/Contact",
+    variant: "primary" as ButtonVariant
 }
 const secondaryButton = {
     text: "Schedule a Call",
-    href: "#plans"
+    variant: "secondary" as ButtonVariant,
+    isMeetingButton: true
 }
 ---
 
@@ -43,21 +47,18 @@ const secondaryButton = {
             mainTitle="How Stellar "
             highlightedTitle="works to achieve your goals"
             cardDescription="We design customized solutions for businesses of all sizes. Whether you need a strategic plan or a customized project, we're here to help you drive your business growth. Contact us today and find out how we can take your company to the next level."
-            buttons={
-                [
-                    {
-                        text: "Contact us",
-                        link: "/contact",
-                        variant: "primary"
-                    },
-                    {
-                        text: "Schedule a call",
-                        link: "/Pricing",
-                        variant: "secondary"
-                    },
-                    
-                ]
-            }
+            buttons={[
+                {
+                    text: "Contact us",
+                    link: "/contact",
+                    variant: "primary" as ButtonVariant
+                },
+                {
+                    text: "Schedule a call",
+                    variant: "secondary" as ButtonVariant,
+                    isMeetingButton: true
+                }
+            ]}
             />
         </div>
         <ProcessSteps/>

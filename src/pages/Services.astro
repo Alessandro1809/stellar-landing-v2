@@ -8,13 +8,17 @@ import { callToActionSections } from "@/types/CallToAction";
 import PlansCard from "@/components/PlansCard.astro";
 import FAQ from "@/components/FAQ.astro";
 
+type ButtonVariant = 'primary' | 'secondary';
+
 const primaryButton = {
-    text: "Contactanos",
-    href: "#contact"
+    text: "Contact Us",
+    href: "/Contact",
+    variant: "primary" as ButtonVariant
 }
 const secondaryButton = {
     text: "Explorar Planes",
-    href: "#plans"
+    href: "/Pricing",
+    variant: "secondary" as ButtonVariant
 }
 ---
 

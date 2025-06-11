@@ -8,16 +8,28 @@ import CallToAction from '@/components/ui/CallToAction.astro';
 import { callToActionSections } from '@/types/CallToAction';
 import SplitTitle from '@/components/SplitTitle.astro';
 
+type ButtonVariant = 'primary' | 'secondary';
+
 const secondaryButton = {
     text: "Explore our plans",
-    href: "#services"
+    href: "/Pricing",
+    variant: "secondary" as ButtonVariant
+} as ButtonProps
+
+type ButtonProps = {
+    text: string;
+    href: string;
+    variant: ButtonVariant;
+    isMeetingButton?: boolean;
 }
 
 const primaryButton = {
     text: "Let's talk",
-    href: "#contact"
-}
----
+    href: "#",
+    isMeetingButton: true,
+    variant: "primary" as ButtonVariant
+} as ButtonProps
+    ---
 
 <Layout>
     <main>

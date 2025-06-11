@@ -2,20 +2,24 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import Button from "./ui/Button.astro";
+import ActionButtons from "./ui/ActionButtons.astro";
+
+type ButtonVariant = 'primary' | 'secondary';
+
+interface ButtonProps {
+  text: string;
+  href?: string;
+  variant?: ButtonVariant;
+  isMeetingButton?: boolean;
+}
 
 interface Props {
   // Propiedades para el contenido de texto
   title?: string;
   description?: string;
   showButtons?: boolean;
-  primaryButton?: {
-    text: string;
-    href: string;
-  };
-  secondaryButton?: {
-    text: string;
-    href: string;
-  };
+  primaryButton?: ButtonProps;
+  secondaryButton?: ButtonProps;
   justifyContent?: string;
   showButton1?: boolean;
   showButton2?: boolean;
@@ -41,12 +45,14 @@ const {
   showButton1 = true,
   showButton2 = true,
   primaryButton = {
-    text: "Habla con nosotros",
-    href: "#contact"
+    text: "Contact Us",
+    href: "/Contact",
+    variant: "primary" as ButtonVariant
   },
   secondaryButton = {
-    text: "Explora nuestros planes",
-    href: "#services"
+    text: "Explore our plans",
+    href: "/Pricing",
+    variant: "secondary" as ButtonVariant
   },
   showLogo = true,
   logoImage = (await import("../assets/HeroLogo.svg")).default,
@@ -94,20 +100,20 @@ const logoColumnClasses = {
             justifyContent && `justify-${justifyContent}`
           ]}>
             {showButton1 && (
-            <Button 
-              href={primaryButton.href}
-              variant="primary"
-            >
-              {primaryButton.text}
-            </Button>
+              <ActionButtons 
+                text={primaryButton.text}
+                link={primaryButton.href}
+                variant={primaryButton.variant || "primary"}
+                isMeetingButton={primaryButton.isMeetingButton}
+              />
             )}
             {showButton2 && (
-            <Button 
-              href={secondaryButton.href}
-              variant="secondary"
-            >
-              {secondaryButton.text}
-            </Button>
+              <ActionButtons 
+                text={secondaryButton.text}
+                link={secondaryButton.href}
+                variant={secondaryButton.variant || "secondary"}
+                isMeetingButton={secondaryButton.isMeetingButton}
+              />
             )}
           </div>
         )}

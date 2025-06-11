@@ -1,0 +1,28 @@
+---
+import MeetingButton from "./MeetingButton.astro";
+
+interface Props {
+    text: string;
+    variant: 'primary' | 'secondary';
+    link?: string;
+    isMeetingButton?: boolean;
+}
+
+const { text, variant, link, isMeetingButton = false } = Astro.props;
+
+const baseClasses = "px-6 py-2 rounded-full transition-all duration-300 font-medium hover:cursor-pointer";
+const variants = {
+    primary: "bg-primary-cyan text-secondary-blue hover:bg-primary-cyan/80",
+    secondary: "bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90"
+};
+const buttonClasses = `${baseClasses} ${variants[variant]}`;
+---
+{isMeetingButton ? (
+    <MeetingButton variant={variant} class={buttonClasses}>
+        {text}
+    </MeetingButton>
+) : (
+    <a href={link} class={buttonClasses}>
+        {text}
+    </a>
+)} 

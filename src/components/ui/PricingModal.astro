@@ -12,28 +12,20 @@ const {
     buttonId
 } = Astro.props;
 
-// Calcular fechas mínima y máxima permitidas
-const today = new Date();
-const minDate = new Date(today);
-minDate.setDate(today.getDate() + 2); // 2 días después de hoy
-
-const formatDateForInput = (date: Date) => {
-    return date.toISOString().slice(0, 16); // Formato YYYY-MM-DDTHH:mm
-};
 ---
 
 <Toast />
 
 <!-- Modal -->
 <div 
-    data-schedule-modal
+    data-pricing-modal
     data-button-id={buttonId}
     class:list={[
-        "fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[999] transition-all duration-300",
+        "fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center transition-all duration-300 z-[999]",
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
     ]}
 >
-    <div class="bg-theme-deepblue/95 backdrop-blur-md border border-primary-yellow/30 rounded-lg p-6 w-full max-w-md mx-4 relative mt-12">
+    <div class="bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-6 w-full max-w-md mx-4 relative mt-12">
         <button 
             class="absolute top-4 right-4 text-gray-400 hover:text-white"
             type="button"
@@ -44,9 +36,9 @@ const formatDateForInput = (date: Date) => {
             </svg>
         </button>
 
-        <h3 class="text-2xl font-bold text-primary-cyan mb-6">Schedule a Meeting</h3>
+        <h3 class="text-2xl font-bold text-primary-cyan mb-6">Inquiry about <span data-plan-name></span></h3>
 
-        <form class="space-y-6" data-schedule-form>
+        <form class="space-y-6" data-pricing-form>
             <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
                 <input 
@@ -70,7 +62,7 @@ const formatDateForInput = (date: Date) => {
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Company (Optional)</label>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Company Name (Optional)</label>
                 <input 
                     type="text" 
                     name="empresa"
@@ -80,47 +72,22 @@ const formatDateForInput = (date: Date) => {
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Select Date and Time</label>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Selected Plan</label>
                 <input 
-                    type="datetime-local" 
-                    name="meeting-datetime"
-                    min={formatDateForInput(minDate)}
+                    type="text" 
+                    name="plan"
                     class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow"
-                    required
+                    readonly
                 />
-                <p class="text-xs text-gray-400 mt-1">Meetings must be scheduled at least 2 days in advance</p>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Duration</label>
-                <div class="grid grid-cols-3 gap-3">
-                    {[15, 30, 45].map((duration) => (
-                        <label class="relative">
-                            <input 
-                                type="radio" 
-                                name="duration" 
-                                value={duration}
-                                class="peer sr-only"
-                                required
-                            />
-                            <div class="text-center p-3 border border-primary-yellow/30 rounded-lg cursor-pointer peer-checked:bg-primary-yellow/20 peer-checked:border-primary-yellow hover:bg-white/5">
-                                {duration} min
-                            </div>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            <input type="hidden" name="servicio" value="Meeting Request" />
-            <input type="hidden" name="asunto" value="New Meeting Request" />
-
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Message (Optional)</label>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Message</label>
                 <textarea 
                     name="mensaje"
-                    rows="3"
+                    rows="4"
                     class="w-full bg-theme-deepblue border border-primary-yellow/30 rounded-lg p-3 text-white focus:outline-none focus:border-primary-yellow resize-none"
-                    placeholder="Add any additional information..."
+                    required
                 ></textarea>
             </div>
 
@@ -128,7 +95,7 @@ const formatDateForInput = (date: Date) => {
                 <button 
                     type="button"
                     class="px-6 py-2 border-2 border-primary-yellow text-white hover:bg-white/10 font-semibold rounded-full transition-colors"
-                    data-cancel-schedule
+                    data-cancel-inquiry
                 >
                     Cancel
                 </button>
@@ -136,7 +103,7 @@ const formatDateForInput = (date: Date) => {
                     type="submit"
                     class="px-6 py-2 bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90 font-semibold rounded-full transition-colors"
                 >
-                    Schedule Meeting
+                    Send Inquiry
                 </button>
             </div>
         </form>
@@ -144,47 +111,31 @@ const formatDateForInput = (date: Date) => {
 </div>
 
 <script>
-    function initScheduleModal() {
-        // Seleccionar todos los modales
-        const modals = document.querySelectorAll<HTMLElement>('[data-schedule-modal]');
+    function initPricingModal() {
+        const modals = document.querySelectorAll<HTMLElement>('[data-pricing-modal]');
         
         modals.forEach(modal => {
             const closeBtn = modal.querySelector<HTMLButtonElement>('[data-close-modal]');
-            const cancelBtn = modal.querySelector<HTMLButtonElement>('[data-cancel-schedule]');
-            const form = modal.querySelector<HTMLFormElement>('[data-schedule-form]');
-        
-            // Close modal function
+            const cancelBtn = modal.querySelector<HTMLButtonElement>('[data-cancel-inquiry]');
+            const form = modal.querySelector<HTMLFormElement>('[data-pricing-form]');
+            const planNameSpan = modal.querySelector<HTMLElement>('[data-plan-name]');
+            const planInput = modal.querySelector<HTMLInputElement>('input[name="plan"]');
+            
             const closeModal = () => {
                 modal.classList.add('opacity-0', 'pointer-events-none');
                 if (form) form.reset();
             };
 
-            // Add event listeners
             closeBtn?.addEventListener('click', closeModal);
             cancelBtn?.addEventListener('click', (e) => {
                 e.preventDefault();
                 closeModal();
             });
 
-            // Handle form submission
             form?.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
                 const formData = new FormData(form);
-                const datetime = (form.querySelector<HTMLInputElement>('[name="meeting-datetime"]')?.value) || '';
-                const duration = (form.querySelector<HTMLInputElement>('input[name="duration"]:checked')?.value) || '';
-
-                // Add meeting details to the message
-                const meetingDetails = `
-Meeting Details:
-Date and Time: ${new Date(datetime).toLocaleString()}
-Duration: ${duration} minutes
-
-Additional Information:
-${formData.get('mensaje') || 'No additional message provided.'}
-                `.trim();
-
-                formData.set('mensaje', meetingDetails);
 
                 try {
                     const response = await fetch('/api/contact', {
@@ -195,19 +146,34 @@ ${formData.get('mensaje') || 'No additional message provided.'}
                     const data = await response.json();
 
                     if (response.ok) {
-                        window.showToast('¡Meeting request sent successfully!', 'success');
+                        window.showToast('¡Inquiry sent successfully!', 'success');
                         closeModal();
                     } else {
-                        window.showToast(data.message || 'Error sending meeting request', 'error');
+                        window.showToast(data.message || 'Error sending inquiry', 'error');
                     }
                 } catch (error) {
-                    window.showToast('Error sending meeting request', 'error');
+                    window.showToast('Error sending inquiry', 'error');
                 }
             });
+
+            // Exponer función para abrir el modal
+            (window as any).openPricingModal = (planName: string, planDetails: string) => {
+                if (planNameSpan) planNameSpan.textContent = planName;
+                if (planInput) {
+                    planInput.value = planDetails;
+                }
+                if (form) {
+                    const messageArea = form.querySelector<HTMLTextAreaElement>('textarea[name="mensaje"]');
+                    if (messageArea) {
+                        messageArea.value = `I'm interested in the ${planName} plan. Please provide more information about the following services:\n\n${planDetails}`;
+                    }
+                }
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            };
         });
     }
 
-    // Initialize on page load and after navigation
-    document.addEventListener('astro:page-load', initScheduleModal);
-    initScheduleModal();
+    // Inicializar en carga de página y después de navegación
+    document.addEventListener('astro:page-load', initPricingModal);
+    initPricingModal();
 </script> 

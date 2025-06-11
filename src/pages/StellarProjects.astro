@@ -7,14 +7,19 @@ import Testimonials from '@/components/Testimonials.astro';
 import CallToAction from '@/components/ui/CallToAction.astro';
 import { callToActionSections } from '@/types/CallToAction';
 
+type ButtonVariant = 'primary' | 'secondary';
+
 const secondaryButton = {
     text: "Explore our plans",
-    href: "#services"
+    href: "/Pricing",
+    variant: "secondary" as ButtonVariant
 }
 
 const primaryButton = {
-    text: "Talk to us",
-    href: "#contact"
+    text: "Let's talk",
+    href: "/Contact",
+    isMeetingButton: true,
+    variant: "primary" as ButtonVariant
 }
 ---
 
