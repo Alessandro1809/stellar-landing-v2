@@ -2,13 +2,19 @@
 import ArrowRight from "@/components/icons/ArrowRight.astro";
 interface Props {
   href: string;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'primaryCyan' | 'secondaryCyan' | 'primaryBlue' | 'secondaryBlue';
   class?: string;
   icon?: boolean;
+  width?: string;
+  target?: string;
   id?: string;
+  
 }
 
 const { 
+
+  target = '_self',
+  width = 'auto',
   href, 
   variant = 'primary',
   class: className = '',
@@ -16,15 +22,20 @@ const {
   id
 } = Astro.props;
 
-const baseStyles = "px-6 py-3 font-semibold rounded-full transition-colors group flex items-center gap-2";
+const baseStyles = `px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 w-${width} md:w-${width}` ;
 const variants = {
   primary: "bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90",
-  secondary: "border-2 border-primary-yellow text-white hover:bg-white/10"
+  secondary: "border-2 border-primary-yellow text-white hover:bg-white/10",
+  primaryCyan: "bg-primary-cyan text-secondary-blue hover:bg-primary-cyan/80",
+  secondaryCyan: "border-2 border-secondary-blue text-primary-cyan hover:bg-secondary-blue/10",
+  primaryBlue: "bg-secondary-blue text-primary-cyan hover:bg-secondary-blue/90",
+  secondaryBlue: "bg-secondary-blue/30 text-primary-cyan hover:bg-secondary-blue/70"
 };
 ---
 
 <a 
   href={href}
+  target={target}
   class:list={[
     baseStyles,
     variants[variant],
@@ -33,5 +44,11 @@ const variants = {
   id={id}
 >
   <slot />
-  {icon && <span class="group-hover:translate-x-1 transition-transform duration-300"><ArrowRight /></span>}
+  {
+  icon && 
+  <span 
+  class="group-hover:translate-x-1 transition-transform duration-300">
+    <ArrowRight />
+  </span>
+  }
 </a> 

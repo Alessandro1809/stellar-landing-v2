@@ -3,7 +3,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { AnimatedGridPattern } from '../components/shadcn/AnimatedGridPattern';
 import ClientRouter from 'astro/components/ClientRouter.astro';
-import PricingModal from '../components/ui/PricingModal.astro';
 import "@/styles/global.css";
 
 ---
@@ -35,7 +34,7 @@ import "@/styles/global.css";
 			<slot />
 		</main>
 		<Footer />
-		<PricingModal buttonId="global-pricing-modal" />
+		
 	</body>
 </html>
 

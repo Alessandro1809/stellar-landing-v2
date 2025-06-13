@@ -1,12 +1,12 @@
 ---
 import SplitTitle from '../SplitTitle.astro';
-import StellarServices from '@/components/icons/StellarServices.astro';
-import ActionButtons from './ActionButtons.astro';
+import Button from './Button.astro';
 
 interface ButtonProps {
     text: string;
-    link?: string;
-    variant: 'primary' | 'secondary';
+    href?: string;
+    target?: string;
+    variant: 'primary' | 'secondary' | 'primaryCyan' | 'secondaryCyan' | 'primaryBlue' | 'secondaryBlue';
     isMeetingButton?: boolean;
 }
 
@@ -19,6 +19,7 @@ interface Props {
     subtitleCard?: string;
     cardDescription?: string;
     buttons?: ButtonProps[];
+    href?: string;
 }
 
 const {
@@ -32,30 +33,26 @@ const {
     buttons = [
         {
             text: "Contact us",
-            link: "/contact",
-            variant: "primary"
+        href: "/Contact",
+        target: "_self",
+            variant: "primaryCyan"
         },
         {
             text: "Explore our plans",
-            link: "/services",
-            variant: "secondary"
+        href: "/Pricing",
+        target: "_self",
+            variant: "secondaryBlue"
         },
         {
             text: "Schedule a call",
-            link: "/about",
-            variant: "secondary"
+        href: "https://calendly.com/stellarteamcr",
+        target: "_blank",
+            variant: "secondaryBlue"
         }
     ]
 } = Astro.props;
 
-const getButtonClasses = (variant: ButtonProps['variant']) => {
-    const baseClasses = "px-6 py-2 rounded-full transition-all duration-300 font-medium";
-    const variants = {
-        primary: "bg-primary-cyan text-secondary-blue hover:bg-primary-cyan/80",
-        secondary: "bg-secondary-blue/30 text-white hover:bg-secondary-blue/40 "
-    };
-    return `${baseClasses} ${variants[variant]}`;
-};
+
 
 ---
 
@@ -87,7 +84,9 @@ const getButtonClasses = (variant: ButtonProps['variant']) => {
                 
                 <div class="flex flex-wrap gap-4 mt-8">
                     {buttons.map(button => (
-                        <ActionButtons {...button} />
+                        <Button variant={button.variant} href={button.href || ""} target={button.target || "_self"}>
+                            {button.text}
+                        </Button>
                     ))}
                 </div>
             </div>

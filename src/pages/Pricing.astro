@@ -9,17 +9,18 @@ import CommingSoon from "@/components/ui/CommingSoon.astro";
 import ProcessSteps from "@/components/ui/ProcessSteps.astro";
 import FAQ from "@/components/FAQ.astro";
 
-type ButtonVariant = 'primary' | 'secondary';
+
 
 const primaryButton = {
     text: "Contact Us",
     href: "/Contact",
-    variant: "primary" as ButtonVariant
+    variant: "primary" 
 }
 const secondaryButton = {
     text: "Schedule a Call",
-    variant: "secondary" as ButtonVariant,
-    isMeetingButton: true
+    variant: "secondary",
+    href: "https://calendly.com/stellarteamcr",
+    target: "_blank",
 }
 ---
 
@@ -50,13 +51,14 @@ const secondaryButton = {
             buttons={[
                 {
                     text: "Contact us",
-                    link: "/contact",
-                    variant: "primary" as ButtonVariant
+                    href: "/contact",
+                    variant: "primaryCyan" 
                 },
                 {
                     text: "Schedule a call",
-                    variant: "secondary" as ButtonVariant,
-                    isMeetingButton: true
+                    variant: "secondaryBlue",
+                    href: "https://calendly.com/stellarteamcr",
+                    target: "_blank",
                 }
             ]}
             />

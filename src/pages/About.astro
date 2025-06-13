@@ -1,7 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/Hero.astro';
-import StellarServices from '@/components/icons/StellarServices.astro';
 import CompanyBento from '@/components/CompanyBento.astro';
 import FoundersOfStellar from '@/components/FoundersOfStellar.astro';
 import CallToAction from '@/components/ui/CallToAction.astro';
@@ -20,19 +19,18 @@ type ButtonProps = {
     text: string;
     href: string;
     variant: ButtonVariant;
-    isMeetingButton?: boolean;
+   
 }
 
 const primaryButton = {
     text: "Let's talk",
-    href: "#",
-    isMeetingButton: true,
+    href: "/Contact", 
     variant: "primary" as ButtonVariant
 } as ButtonProps
     ---
 
 <Layout>
-    <main>
+    
         <Hero 
             title="About us"
             description="Learn how our team can take your vision to the next level, let's talk about how we can help you achieve your goals."
@@ -74,7 +72,7 @@ const primaryButton = {
                 />
             </section>
         </article>
-    </main>
+    
 </Layout>
 
 <style>

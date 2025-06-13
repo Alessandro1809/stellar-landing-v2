@@ -1,5 +1,5 @@
 ---
-import ArrowRight from "@/components/icons/ArrowRight.astro";
+
 import { Particles } from "@/components/shadcn/Particles";
 import { BorderBeam } from "@/components/shadcn/BorderBeam";
 import Button from "@/components/ui/Button.astro";
@@ -21,7 +21,7 @@ interface Props {
 }
 
 const secondaryButton = {
-    href: "/contact",
+    href: "/Contact",
     text: "Subscribe"
 }
 
@@ -92,7 +92,7 @@ const {
         <div class="flex flex-col items-center justify-center mt-8">
             <p class="text-white mb-4">Stay up to date with our news</p>
             <div class="flex gap-2">
-                <Button 
+            <Button 
               href={secondaryButton.href}
               variant="primary"
               icon={true}

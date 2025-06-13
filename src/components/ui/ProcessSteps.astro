@@ -7,8 +7,7 @@ import ComputerIcon from "@/assets/icons/ComputerIcon.svg";
 import TestTubeIcon from "@/assets/icons/TestTubeIcon.svg";
 import GlobeIcon from "@/assets/icons/GlobeIcon.svg";
 import ChartUpIcon from "@/assets/icons/ChartUpIcon.svg";
-import ScheduleButton from "@/components/ui/ScheduleButton.astro";
-import MeetingButton from "@/components/ui/MeetingButton.astro";
+
 
 interface Step {
     icon: any; // This allows both SVG imports and string paths
@@ -72,7 +71,7 @@ const {
     steps = defaultSteps,
     ctaTitle = "Ready to start?",
     ctaButtonText = "Schedule Kickoff",
-    ctaButtonHref = "#contact"
+    ctaButtonHref = "https://calendly.com/stellarteamcr"
 } = Astro.props;
 
 import Button from "./Button.astro";
@@ -117,10 +116,11 @@ import Button from "./Button.astro";
             <p class="text-gray-400 mb-8">
                 Click here to schedule your kickoff, and in less than 48 hours you'll have your proposal in hand.
             </p>
-        <MeetingButton variant="primary" class="w-auto mx-auto" showIcon={true} 
-        >
-            {ctaButtonText}
-        </MeetingButton>
+       <div class="flex justify-center">
+            <Button variant="primaryCyan" href={ctaButtonHref} icon={true} target="_blank">
+                {ctaButtonText}
+            </Button>
+       </div>
         </div>
 
         <!-- Decorative Connection Lines -->

@@ -35,6 +35,7 @@ const {
                         <a 
                             href={button.href}
                             class={getButtonClasses(button.variant, section.style)}
+                            target={button.target || "_self"}
                         >
                             {button.text}
                         </a>

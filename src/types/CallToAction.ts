@@ -1,6 +1,7 @@
 export interface Button {
     text: string;
     href: string;
+    target?: string;
     variant: 'primary' | 'secondary' | 'yellow' | 'cyan';
 }
 
@@ -35,13 +36,15 @@ export const defaultSections: CTASection[] = [
         buttons: [
             {
                 text: "Explore our plans",
-                href: "/contact",
-                variant: "primary"
+                href: "/Pricing",
+                variant: "primary",
+                target: "_self"
             },
             {
                 text: "More services",
-                href: "/contact",
-                variant: "secondary"
+                href: "/Services",
+                variant: "secondary",
+                target: "_self"
             }
         ]
     },
@@ -55,9 +58,16 @@ export const defaultSections: CTASection[] = [
         },
         buttons: [
             {
-                text: "Let's talk",
-                href: "/contact",
-                variant: "primary"
+                text: "Contact us",
+                href: "/Contact",
+                variant: "primary",
+                target: "_self"
+            },
+            {
+                text: "Schedule a meeting",
+                href: "https://calendly.com/stellarteamcr",
+                variant: "secondary",
+                target: "_blank"
             }
         ]
     }
@@ -94,12 +104,13 @@ export const callToActionSections = [
         buttons: [
             {
                 text: "Schedule a meeting",
-                href: "/contact",
-                variant: "primary"
+                href: "https://calendly.com/stellarteamcr",
+                variant: "primary",
+                target: "_blank"
             },
             {
                 text: "Contact us",
-                href: "/contact",
+                href: "/Contact",
                 variant: "secondary"
             }
         ]
@@ -115,12 +126,12 @@ export const callToActionSections = [
         buttons: [
             {
                 text: "Explore our plans",
-                href: "/contact",
+                href: "/Pricing",
                 variant: "yellow"
             },
             {
                 text: "Free consultation",
-                href: "/contact",
+                href: "/Contact",
                 variant: "yellow-secondary"
             }
         ]
@@ -139,8 +150,9 @@ export const callToActionSectionsContact = [
         buttons: [
             {
                 text: "Schedule a meeting",
-                href: "/contact",
-                variant: "primary"
+                href: "https://calendly.com/stellarteamcr",
+                variant: "primary",
+                target: "_blank"
             },
             {
                 text: "Explore our plans",
@@ -185,8 +197,9 @@ export const callToActionSectionsPricing = [
         buttons: [
             {
                 text: "Schedule a meeting",
-                href: "/contact",
-                variant: "primary"
+                href: "https://calendly.com/stellarteamcr",
+                variant: "primary",
+                target: "_blank"
             },
             {
                 text: "Contact us",

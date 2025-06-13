@@ -6,18 +6,18 @@ import CommingSoon from "@/components/ui/CommingSoon.astro";
 import CallToAction from "@/components/ui/CallToAction.astro";
 import { callToActionSectionsContact } from "@/types/CallToAction";
 
-type ButtonVariant = 'primary' | 'secondary';
+
 
 const primaryButton = {
     text: "Explore our plans",
     href: "/Pricing",
-    variant: "primary" as ButtonVariant
+    variant: "primary" 
 }
 const secondaryButton = {
     text: "Schedule a call",
-    href: "#",
-    isMeetingButton: true,
-    variant: "secondary" as ButtonVariant
+    href: "https://calendly.com/stellarteamcr",
+    variant: "secondary",
+    target: "_blank"
 }
 
 ---

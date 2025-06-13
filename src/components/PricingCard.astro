@@ -1,7 +1,7 @@
 ---
 import Button from "@/components/ui/Button.astro";
 import {Particles} from "@/components/shadcn/Particles";
-import ScheduleButton from "@/components/ui/ScheduleButton.astro";
+
 
 const plans = [
     {
@@ -14,7 +14,8 @@ const plans = [
             "Basic branding: simple logo and custom color palette.",
             "Technical support for 1 month after delivery."
         ],
-        buttonText: "Inquire"
+        buttonText: "Inquire",
+        href: "/Contact"
     },
     {
         name: "Growth",
@@ -26,7 +27,8 @@ const plans = [
             "Complete branding: professional logo, brand manual, and basic graphic elements.",
             "Technical support and updates for 3 months."
         ],
-        buttonText: "Inquire"
+        buttonText: "Inquire",
+        href: "/Contact"
     },
     {
         name: "Ultimate",
@@ -38,7 +40,8 @@ const plans = [
             "Premium branding: advanced logo design, complete visual identity, and advertising materials.",
             "Technical support and updates for 6 months."
         ],
-        buttonText: "Inquire"
+        buttonText: "Inquire",
+        href: "/Contact"
     }
 ]
 ---
@@ -62,12 +65,12 @@ const plans = [
                             ))}
                         </ul>
                         
-                        <div class="mt-auto">
-                            <ScheduleButton variant="primary" class="w-full "
-                            showIcon={true}
-                            >
-                                {plan.buttonText}
-                            </ScheduleButton>
+                        <div class="flex justify-center">
+                            <Button  variant="primary" href={plan.href} icon={true} width="full">
+                            
+                                    {plan.buttonText}
+                             
+                            </Button>
                         </div>
                     </div>
                     <Particles 
