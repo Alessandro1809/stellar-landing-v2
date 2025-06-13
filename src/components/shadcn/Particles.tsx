@@ -302,12 +302,11 @@ export const Particles: React.FC<ParticlesProps> = ({
 
   return (
     <div
-      className={cn("pointer-events-none", className)}
+      className={cn("absolute inset-0", className)}
       ref={canvasContainerRef}
       aria-hidden="true"
-      {...props}
     >
-      <canvas ref={canvasRef} className="size-full" />
+      <canvas ref={canvasRef} />
     </div>
   );
 };
