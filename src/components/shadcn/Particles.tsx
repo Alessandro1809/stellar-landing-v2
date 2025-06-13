@@ -77,7 +77,7 @@ type Circle = {
 };
 
 export const Particles: React.FC<ParticlesProps> = ({
-  className = "",
+  className,
   quantity = 100,
   staticity = 50,
   ease = 50,
@@ -86,7 +86,6 @@ export const Particles: React.FC<ParticlesProps> = ({
   color = "#ffffff",
   vx = 0,
   vy = 0,
-  ...props
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -97,20 +96,26 @@ export const Particles: React.FC<ParticlesProps> = ({
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
   const rafID = useRef<number | null>(null);
   const resizeTimeout = useRef<NodeJS.Timeout | null>(null);
+  const isInitialized = useRef(false);
 
   useEffect(() => {
+    if (isInitialized.current) return;
+
     if (canvasRef.current) {
       context.current = canvasRef.current.getContext("2d");
     }
     initCanvas();
     animate();
+    isInitialized.current = true;
 
     const handleResize = () => {
       if (resizeTimeout.current) {
         clearTimeout(resizeTimeout.current);
       }
       resizeTimeout.current = setTimeout(() => {
-        initCanvas();
+        if (canvasRef.current && canvasContainerRef.current) {
+          setCanvasSize();
+        }
       }, 200);
     };
 
@@ -127,33 +132,21 @@ export const Particles: React.FC<ParticlesProps> = ({
     };
   }, [color]);
 
-  useEffect(() => {
-    initCanvas();
-  }, [refresh]);
-
-  const initCanvas = () => {
-    resizeCanvas();
-    drawParticles();
-  };
-
-  const resizeCanvas = () => {
+  const setCanvasSize = () => {
     if (canvasContainerRef.current && canvasRef.current && context.current) {
       canvasSize.current.w = canvasContainerRef.current.offsetWidth;
       canvasSize.current.h = canvasContainerRef.current.offsetHeight;
-
       canvasRef.current.width = canvasSize.current.w * dpr;
       canvasRef.current.height = canvasSize.current.h * dpr;
       canvasRef.current.style.width = `${canvasSize.current.w}px`;
       canvasRef.current.style.height = `${canvasSize.current.h}px`;
       context.current.scale(dpr, dpr);
-
-      // Clear existing particles and create new ones with exact quantity
-      circles.current = [];
-      for (let i = 0; i < quantity; i++) {
-        const circle = circleParams();
-        drawCircle(circle);
-      }
     }
+  };
+
+  const initCanvas = () => {
+    setCanvasSize();
+    drawParticles();
   };
 
   const circleParams = (): Circle => {
@@ -283,7 +276,7 @@ export const Particles: React.FC<ParticlesProps> = ({
 
   return (
     <div
-      className={cn("absolute inset-0 pointer-events-none", className)}
+      className={cn("absolute inset-0 pointer-events-none touch-none", className)}
       ref={canvasContainerRef}
       aria-hidden="true"
     >
