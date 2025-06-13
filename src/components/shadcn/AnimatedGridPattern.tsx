@@ -43,7 +43,6 @@ export function AnimatedGridPattern({
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [squares, setSquares] = useState(() => generateSquares(numSquares));
   const [isMobile, setIsMobile] = useState(false);
-  const [hasInitialized, setHasInitialized] = useState(false);
 
   // Scroll parallax setup with smooth transition
   const { scrollY } = useScroll();
@@ -73,7 +72,6 @@ export function AnimatedGridPattern({
   }
 
   const updateSquarePosition = (id: number) => {
-    if (isMobile) return; // No actualizar posiciones en móvil
     setSquares((currentSquares) =>
       currentSquares.map((sq) =>
         sq.id === id
@@ -95,11 +93,10 @@ export function AnimatedGridPattern({
   }, []);
 
   useEffect(() => {
-    if (dimensions.width && dimensions.height && !hasInitialized) {
-      setSquares(generateSquares(isMobile ? Math.floor(numSquares / 2) : numSquares));
-      setHasInitialized(true);
+    if (dimensions.width && dimensions.height) {
+      setSquares(generateSquares(numSquares));
     }
-  }, [dimensions, numSquares, isMobile, hasInitialized]);
+  }, [dimensions, numSquares]);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
@@ -124,14 +121,14 @@ export function AnimatedGridPattern({
 
   return (
     <motion.div
-      style={{ y: yPos }}
+      style={{ y: isMobile ? 0 : yPos }}
       className="w-full h-full"
       initial={false}
       transition={{ 
         y: {
           type: "spring",
-          stiffness: isMobile ? 0 : 100,
-          damping: isMobile ? 0 : 30,
+          stiffness: 100,
+          damping: 30,
           restDelta: 0.001
         }
       }}
@@ -168,9 +165,9 @@ export function AnimatedGridPattern({
               initial={{ opacity: 0 }}
               animate={{ opacity: maxOpacity }}
               transition={{
-                duration: isMobile ? duration * 2 : duration,
-                repeat: isMobile ? 0 : 1,
-                delay: index * (isMobile ? 0.05 : 0.1),
+                duration,
+                repeat: 1,
+                delay: index * 0.1,
                 repeatType: "reverse",
               }}
               onAnimationComplete={() => updateSquarePosition(id)}
