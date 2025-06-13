@@ -5,16 +5,15 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 
 <header 
   id="main-header" 
-  class="fixed top-0 left-0 z-1 w-full py-4 animate-fade-in"
+  class="fixed top-0 left-0 z-[100] w-full py-4 animate-fade-in will-change-transform"
   transition:persist
 >
-  <div class="container mx-auto px-4 z-30">
+  <div class="container mx-auto px-4">
     <nav class="flex items-center justify-between transition-all duration-300 ease-in-out" id="main-nav" transition:persist>
       <!-- Logo -->
       <a 
-      
         href="/" 
-        class="flex items-center gap-2 relative z-30 -rotate-32" 
+        class="flex items-center gap-2 relative z-[101] -rotate-32" 
         aria-label="Go to homepage"
       >
         <StellarAnimatedIcon />
@@ -34,7 +33,7 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
       </div>
 
       <!-- CTA Button -->
-      <div class="hidden md:block relative z-10">
+      <div class="hidden md:block relative z-[101]">
         <Button 
           href="/Pricing" 
           variant="secondary"
@@ -46,7 +45,7 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
       <!-- Mobile Menu Button -->
       <button 
         id="mobile-menu-btn" 
-        class="md:hidden text-white p-2"
+        class="md:hidden text-white p-2 relative z-[101]"
         aria-label="Toggle menu"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -62,7 +61,7 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 <!-- Mobile Menu Overlay -->
 <div 
   id="mobile-menu-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden z-[40]"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 md:hidden z-[98] will-change-opacity"
   aria-hidden="true"
 >
 </div>
@@ -70,10 +69,10 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 <!-- Mobile Menu -->
 <nav 
   id="mobile-menu" 
-  class="fixed left-0 right-0 bottom-0 w-full h-[50vh] border-t border-primary-cyan/80 bg-secondary-blue/90 backdrop-blur-lg translate-y-full transition-transform duration-300 md:hidden rounded-t-3xl shadow-lg z-[40]"
+  class="fixed left-0 right-0 bottom-0 w-full h-[50vh] border-t border-primary-cyan/80 bg-secondary-blue/90 backdrop-blur-lg translate-y-full transition-transform duration-300 md:hidden rounded-t-3xl shadow-lg z-[99] will-change-transform"
   aria-label="Mobile navigation"
 >
-  <div class="relative w-full h-full px-6 pt-8 pb-safe">
+  <div class="relative w-full h-full px-6 pt-8 pb-safe overscroll-none">
     <!-- Decorative Line -->
     <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1 bg-white/20 rounded-full"></div>
 
@@ -140,6 +139,7 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     );
     filter: blur(20px);
     transition: opacity 300ms ease-in-out;
+    will-change: opacity;
   }
 
   #main-nav.scrolled .nav-blur-effect {
@@ -172,8 +172,13 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
   }
 
   #main-header {
-    will-change: backdrop-filter, background-color, border-bottom;
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+    transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(11, 26, 62, 0);
     border-bottom: 1px solid rgba(255, 255, 255, 0);
     @media (max-width: 768px) {
@@ -197,6 +202,8 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     private overlay: HTMLElement | null;
     private scrollThreshold: number;
     private isMobile: boolean;
+    private lastScrollY: number;
+    private ticking: boolean;
 
     constructor() {
       this.header = document.querySelector('#main-nav');
@@ -207,18 +214,18 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
       this.overlay = document.querySelector('#mobile-menu-overlay');
       this.scrollThreshold = 50;
       this.isMobile = window.innerWidth < 768;
+      this.lastScrollY = window.scrollY;
+      this.ticking = false;
 
       this.init();
     }
 
     init() {
-      // Verificar el scroll inicial
       this.checkScroll();
       this.setupScrollHandler();
       this.setupMobileMenuHandlers();
       this.setupResizeHandler();
 
-      // Manejar la navegación del view transition
       document.addEventListener('astro:after-swap', () => {
         this.checkScroll();
       });
@@ -233,8 +240,12 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     }
 
     setupResizeHandler() {
+      let resizeTimeout: number;
       window.addEventListener('resize', () => {
-        requestAnimationFrame(() => {
+        if (resizeTimeout) {
+          window.cancelAnimationFrame(resizeTimeout);
+        }
+        resizeTimeout = window.requestAnimationFrame(() => {
           const wasMobile = this.isMobile;
           this.isMobile = window.innerWidth < 768;
           
@@ -251,10 +262,15 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
 
     setupScrollHandler() {
       window.addEventListener('scroll', () => {
-        requestAnimationFrame(() => {
-          this.checkScroll();
-        });
-      });
+        this.lastScrollY = window.scrollY;
+        if (!this.ticking) {
+          window.requestAnimationFrame(() => {
+            this.checkScroll();
+            this.ticking = false;
+          });
+          this.ticking = true;
+        }
+      }, { passive: true });
     }
 
     setupMobileMenuHandlers() {
@@ -275,11 +291,8 @@ import StellarAnimatedIcon from "@/components/icons/StellarAnimatedIcon.astro";
     }
   }
 
-  // Asegurarse de que el controlador se inicialice tanto en la carga inicial como después de las transiciones de vista
-  const initHeader = () => {
+  document.addEventListener('astro:page-load', () => {
     new HeaderController();
-  };
-
-  document.addEventListener('astro:page-load', initHeader);
+  });
 </script>
   
