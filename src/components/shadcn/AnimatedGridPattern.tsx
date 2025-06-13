@@ -46,7 +46,7 @@ export function AnimatedGridPattern({
 
   // Scroll parallax setup with smooth transition
   const { scrollY } = useScroll();
-  const yPos = useTransform(scrollY, [0, 600], [0, isMobile ? -50 : -150]);
+  const yPos = useTransform(scrollY, [0, 600], [0, isMobile ? 0 : -150]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -121,14 +121,14 @@ export function AnimatedGridPattern({
 
   return (
     <motion.div
-      style={{ y: yPos }}
+      style={{ y: isMobile ? 0 : yPos }}
       className="w-full h-full"
       initial={false}
       transition={{ 
         y: {
           type: "spring",
-          stiffness: isMobile ? 50 : 100,
-          damping: isMobile ? 20 : 30,
+          stiffness: 100,
+          damping: 30,
           restDelta: 0.001
         }
       }}
