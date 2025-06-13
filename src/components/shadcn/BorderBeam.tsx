@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion, type MotionStyle, type Transition } from "motion/react";
+import { useState, useEffect } from "react";
 
 interface BorderBeamProps {
   /**
@@ -46,7 +47,7 @@ interface BorderBeamProps {
   initialOffset?: number;
 }
 
-export const BorderBeam = ({
+export function BorderBeam({
   className,
   size = 50,
   delay = 0,
@@ -57,7 +58,20 @@ export const BorderBeam = ({
   style,
   reverse = false,
   initialOffset = 0,
-}: BorderBeamProps) => {
+}: BorderBeamProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (isMobile) return null;
+
   return (
     <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent [mask-clip:padding-box,border-box] [mask-composite:intersect] [mask-image:linear-gradient(transparent,transparent),linear-gradient(#000,#000)] ">
       <motion.div
@@ -91,4 +105,4 @@ export const BorderBeam = ({
       />
     </div>
   );
-};
+}
