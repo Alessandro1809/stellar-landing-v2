@@ -9,6 +9,7 @@ interface Props {
     class?: string;
     hover?: boolean;
     pauseBetweenLoops?: number; // tiempo en segundos
+    mobileOptimized?: boolean;
 }
 
 const {
@@ -20,7 +21,8 @@ const {
     height = "100%",
     class: className = "",
     hover = false,
-    pauseBetweenLoops = 4 // por defecto 4 segundos
+    pauseBetweenLoops = 4, // por defecto 4 segundos
+    mobileOptimized = true
 } = Astro.props;
 
 // Generar un ID único para cada instancia
@@ -38,7 +40,7 @@ const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
     ></lottie-player>
 </div>
 
-<script is:inline define:vars={{ uniqueId, hover, autoplay, loop, pauseBetweenLoops }}>
+<script is:inline define:vars={{ uniqueId, hover, autoplay, loop, pauseBetweenLoops, mobileOptimized }}>
     document.addEventListener('astro:page-load', () => {
         const container = document.getElementById(uniqueId);
         if (!container) return;
@@ -49,6 +51,8 @@ const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
         let isPlaying = false;
         let isPaused = false;
         let hoverTimeout;
+        let isMobile = window.innerWidth < 768;
+        let observer;
 
         const startAnimation = () => {
             if (!isPlaying && !isPaused) {
@@ -79,12 +83,30 @@ const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
             }
         };
 
+        // Configurar Intersection Observer para optimizar en móviles
+        if (mobileOptimized) {
+            observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (autoplay) startAnimation();
+                    } else {
+                        pauseAnimation();
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px'
+            });
+
+            observer.observe(container);
+        }
+
         // Configurar eventos
         player.addEventListener('complete', handleComplete);
 
         player.addEventListener('ready', () => {
             player.seek(0);
-            if (autoplay) {
+            if (autoplay && (!mobileOptimized || !isMobile)) {
                 startAnimation();
             } else {
                 pauseAnimation();
@@ -108,6 +130,13 @@ const uniqueId = `lottie-${Math.random().toString(36).substring(2, 11)}`;
                 }, 100);
             });
         }
+
+        // Limpiar observer al desmontar
+        return () => {
+            if (observer) {
+                observer.disconnect();
+            }
+        };
     });
 </script>
 

@@ -42,10 +42,20 @@ export function AnimatedGridPattern({
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [squares, setSquares] = useState(() => generateSquares(numSquares));
+  const [isMobile, setIsMobile] = useState(false);
 
   // Scroll parallax setup with smooth transition
   const { scrollY } = useScroll();
-  const yPos = useTransform(scrollY, [0, 600], [0, -150]);
+  const yPos = useTransform(scrollY, [0, 600], [0, isMobile ? -50 : -150]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   function getPos() {
     return [
@@ -117,8 +127,8 @@ export function AnimatedGridPattern({
       transition={{ 
         y: {
           type: "spring",
-          stiffness: 100,
-          damping: 30,
+          stiffness: isMobile ? 50 : 100,
+          damping: isMobile ? 20 : 30,
           restDelta: 0.001
         }
       }}
