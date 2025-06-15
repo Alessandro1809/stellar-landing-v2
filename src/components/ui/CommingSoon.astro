@@ -21,7 +21,7 @@ interface Props {
 }
 
 const secondaryButton = {
-    href: "/Contact",
+    href: "#",
     text: "Subscribe"
 }
 
@@ -45,6 +45,36 @@ const {
         subtext: "Ready to be the first to know more? Stay tuned!"
     }
 } = Astro.props;
+
+// Estado para mostrar la modal
+let showModal = false;
+let email = "";
+let emailSent = false;
+let error = "";
+
+function openModal() {
+  showModal = true;
+  email = "";
+  emailSent = false;
+  error = "";
+}
+
+function closeModal() {
+  showModal = false;
+}
+
+async function handleSubmit(e: any) {
+  e.preventDefault();
+  error = "";
+  emailSent = false;
+  // Validación simple de email
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    error = "Por favor ingresa un email válido.";
+    return;
+  }
+  // Aquí podrías hacer una petición a tu backend o servicio de newsletter
+  emailSent = true;
+}
 ---
 
 <div class="relative overflow-hidden w-full rounded-2xl bg-gradient-to-br from-secondary-blue/10 to-primary-yellow/30 backdrop-blur-sm border border-primary-cyan/20 p-12">
@@ -92,16 +122,14 @@ const {
         <div class="flex flex-col items-center justify-center mt-8">
             <p class="text-white mb-4">Stay up to date with our news</p>
             <div class="flex gap-2">
-            <Button 
-              href={secondaryButton.href}
-              variant="primary"
-              icon={true}
-            >
-              {secondaryButton.text}
-            </Button>
-        
-            
-            
+              <button
+                type="button"
+                class="px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90 focus:outline-none"
+                onclick="document.getElementById('comming-soon-modal').classList.remove('hidden')"
+              >
+                <span>{secondaryButton.text}</span>
+                <!-- Aquí puedes incluir el icono si lo deseas -->
+              </button>
             </div>
         </div>
     </div>
@@ -114,3 +142,94 @@ const {
   />
   <BorderBeam client:idle duration={5} size={400} />
 </div>
+
+<div id="comming-soon-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="relative bg-gradient-to-br from-secondary-blue/90 to-primary-yellow/30 border border-primary-cyan/40 rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 animate-fade-in">
+    <button class="absolute top-3 right-3 text-primary-cyan hover:text-primary-yellow text-2xl" type="button" onclick="document.getElementById('comming-soon-modal').classList.add('hidden')" aria-label="Cerrar modal">&times;</button>
+    <h3 class="text-2xl font-bold text-primary-yellow mb-2">¡Suscríbete para novedades!</h3>
+    <p class="text-gray-200 mb-4">Déjanos tu email y te avisaremos cuando lancemos nuestros nuevos planes.</p>
+    <form id="comming-soon-form" class="flex flex-col gap-4">
+      <input
+        type="email"
+        id="comming-soon-email"
+        class="rounded-full px-4 py-2 border border-primary-cyan bg-white/80 text-theme-deepblue focus:outline-none focus:ring-2 focus:ring-primary-yellow transition"
+        placeholder="Tu email..."
+        required
+      />
+      <div id="comming-soon-error" class="text-red-400 text-sm"></div>
+      <button
+        type="submit"
+        class="bg-primary-yellow text-theme-deepblue font-bold rounded-full px-4 py-2 hover:bg-primary-yellow/90 transition-colors"
+      >
+        Suscribirme
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('comming-soon-form');
+    const emailInput = document.getElementById('comming-soon-email');
+    const errorDiv = document.getElementById('comming-soon-error');
+    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    if (form && emailInput instanceof HTMLInputElement && errorDiv && submitButton instanceof HTMLButtonElement) {
+      form.onsubmit = async function(e) {
+        e.preventDefault();
+        errorDiv.textContent = '';
+        const email = emailInput.value.trim();
+
+        // Validación de email
+        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          errorDiv.textContent = 'Por favor ingresa un email válido.';
+          return false;
+        }
+
+        try {
+          // Deshabilitar el botón mientras se envía
+          submitButton.disabled = true;
+          submitButton.textContent = 'Enviando...';
+
+          const formData = new FormData();
+          formData.append('nombre', 'Suscriptor Newsletter');
+          formData.append('email', email);
+          formData.append('empresa', ''); // Campo opcional
+          formData.append('servicio', 'Digital Marketing');
+          formData.append('asunto', 'Suscripción a Digital Marketing Updates');
+          formData.append('mensaje', 'Me gustaría recibir actualizaciones sobre los nuevos planes de marketing digital.');
+
+          const response = await fetch('/api/contact', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Mostrar mensaje de éxito
+            form.innerHTML = `
+              <div class="text-center space-y-4">
+                <div class="text-primary-cyan font-semibold text-xl">¡Gracias por suscribirte! 🎉</div>
+                <p class="text-gray-200">Te mantendremos informado sobre nuestros nuevos planes de marketing digital.</p>
+              </div>
+            `;
+            // Cerrar la modal después de 3 segundos
+            setTimeout(() => {
+              document.getElementById('comming-soon-modal')?.classList.add('hidden');
+            }, 3000);
+          } else {
+            throw new Error(data.message || 'Error al procesar la solicitud');
+          }
+        } catch (error) {
+          // Mostrar error y rehabilitar el botón
+          errorDiv.textContent = error instanceof Error ? error.message : 'Error al enviar el formulario. Por favor, intenta de nuevo.';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Suscribirme';
+        }
+
+        return false;
+      };
+    }
+  });
+</script>

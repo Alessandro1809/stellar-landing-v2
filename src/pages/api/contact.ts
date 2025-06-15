@@ -1,13 +1,10 @@
 import type { APIRoute } from 'astro';
-import nodemailer from 'nodemailer';
+import Mailjet from 'node-mailjet';
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'stellarteamcr@gmail.com',
-        pass: import.meta.env.GMAIL_APP_PASSWORD
-    }
-});
+const mailjet = Mailjet.apiConnect(
+    import.meta.env.MJ_API_KEY,
+    import.meta.env.MJ_SECRET_KEY
+);
 
 export const POST: APIRoute = async ({ request }) => {
     try {
@@ -41,121 +38,99 @@ export const POST: APIRoute = async ({ request }) => {
             );
         }
 
-        // Enviar email
-        await transporter.sendMail({
-            from: 'stellarteamcr@gmail.com',
-            to: 'stellarteamcr@gmail.com',
-            subject: `Nuevo contacto: ${asunto}`,
-            html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            line-height: 1.6;
-                            color: #333;
-                            max-width: 600px;
-                            margin: 0 auto;
-                            padding: 20px;
-                        }
-                        .header {
-                            background: linear-gradient(135deg, #000B1C 0%, #36DBFF 100%);
-                            color: white;
-                            padding: 20px;
-                            border-radius: 10px 10px 0 0;
-                            text-align: center;
-                        }
-                        .content {
-                            background: #f9fafb;
-                            padding: 20px;
-                            border-radius: 0 0 10px 10px;
-                            border: 1px solid #e5e7eb;
-                        }
-                        .field {
-                            margin-bottom: 15px;
-                            background: white;
-                            padding: 15px;
-                            border-radius: 8px;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                        }
-                        .label {
-                            color: #4F7CEC;
-                            font-weight: bold;
-                            margin-bottom: 5px;
-                            display: block;
-                        }
-                        .value {
-                            color: #1f2937;
-                        }
-                        .message-box {
-                            background: white;
-                            padding: 20px;
-                            border-radius: 8px;
-                            margin-top: 20px;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                        }
-                        .footer {
-                            text-align: center;
-                            margin-top: 20px;
-                            color: #6b7280;
-                            font-size: 0.875rem;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1>🌟 STELLAR CONSULTANTS</h1> 
-                        <p>Has recibido una nueva solicitud desde el formulario de contacto</p>
+        // Preparar el contenido HTML del email
+        const htmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #000B1C 0%, #36DBFF 100%); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
+                    <h1>🌟 STELLAR CONSULTANTS</h1>
+                    <p>Nueva solicitud desde el formulario de contacto</p>
+                </div>
+                
+                <div style="background: #f9fafb; padding: 20px; border-radius: 0 0 10px 10px; border: 1px solid #e5e7eb;">
+                    <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <strong style="color: #4F7CEC;">Nombre:</strong>
+                        <div>${nombre}</div>
                     </div>
                     
-                    <div class="content">
-                        <div class="field">
-                            <span class="label">Nombre</span>
-                            <div class="value">${nombre}</div>
-                        </div>
-                        
-                        <div class="field">
-                            <span class="label">Email</span>
-                            <div class="value">${email}</div>
-                        </div>
-                        
-                        <div class="field">
-                            <span class="label">Empresa</span>
-                            <div class="value">${empresa || 'No especificada'}</div>
-                        </div>
-                        
-                        <div class="field">
-                            <span class="label">Servicio de Interés</span>
-                            <div class="value">${servicio}</div>
-                        </div>
-                        
-                        <div class="field">
-                            <span class="label">Asunto</span>
-                            <div class="value">${asunto}</div>
-                        </div>
-                        
-                        <div class="message-box">
-                            <span class="label">Mensaje</span>
-                            <div class="value" style="white-space: pre-wrap;">${mensaje}</div>
-                        </div>
-                        
-                        <div class="footer">
-                            <p>Este mensaje fue enviado desde el formulario de contacto de Stellar Team</p>
-                            <p>© ${new Date().getFullYear()} Stellar Team CR. Todos los derechos reservados.</p>
-                        </div>
+                    <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <strong style="color: #4F7CEC;">Email:</strong>
+                        <div>${email}</div>
                     </div>
-                </body>
-                </html>
-            `
-        });
+                    
+                    ${empresa ? `
+                    <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <strong style="color: #4F7CEC;">Empresa:</strong>
+                        <div>${empresa}</div>
+                    </div>
+                    ` : ''}
+                    
+                    <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <strong style="color: #4F7CEC;">Servicio:</strong>
+                        <div>${servicio}</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <strong style="color: #4F7CEC;">Asunto:</strong>
+                        <div>${asunto}</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <strong style="color: #4F7CEC;">Mensaje:</strong>
+                        <div style="white-space: pre-wrap;">${mensaje}</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.875rem;">
+                    <p>Este mensaje fue enviado desde el formulario de contacto de Stellar Team</p>
+                    <p>© ${new Date().getFullYear()} Stellar Team CR. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        `;
 
-        return new Response(
-            JSON.stringify({ 
-                message: 'Mensaje enviado correctamente'
-            }),
-            { status: 200 }
-        );
+        try {
+            const response = await mailjet
+                .post("send", { version: 'v3.1' })
+                .request({
+                    Messages: [
+                        {
+                            From: {
+                                Email: "stellarteamcr@gmail.com",
+                                Name: "Stellar Team CR"
+                            },
+                            To: [
+                                {
+                                    Email: "stellarteamcr@gmail.com",
+                                    Name: "Stellar Team"
+                                }
+                            ],
+                            Subject: `Nuevo contacto: ${asunto}`,
+                            TextPart: `
+                                Nombre: ${nombre}
+                                Email: ${email}
+                                ${empresa ? `Empresa: ${empresa}` : ''}
+                                Servicio: ${servicio}
+                                Asunto: ${asunto}
+                                Mensaje: ${mensaje}
+                            `,
+                            HTMLPart: htmlContent
+                        }
+                    ]
+                });
+
+            if (response.response.status === 200) {
+                return new Response(
+                    JSON.stringify({ 
+                        message: 'Mensaje enviado correctamente'
+                    }),
+                    { status: 200 }
+                );
+            }
+            
+            throw new Error('Error al enviar el email');
+        } catch (error) {
+            console.error('Error al enviar email:', error);
+            throw new Error('Error al enviar el email');
+        }
     } catch (error) {
         console.error('Error procesando el formulario:', error);
         return new Response(
