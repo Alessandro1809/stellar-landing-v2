@@ -1,5 +1,7 @@
 ---
 import ArrowRight from "@/components/icons/ArrowRight.astro";
+import { makeIssue } from "astro:schema";
+import { m } from "motion/react";
 interface Props {
   href: string;
   variant?: 'primary' | 'secondary' | 'primaryCyan' | 'secondaryCyan' | 'primaryBlue' | 'secondaryBlue';
@@ -21,7 +23,7 @@ const {
   id
 } = Astro.props;
 
-const baseStyles = `px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 w-full md:w-${width}`;
+const baseStyles = `px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 w-auto md:w-${width}`;
 const variants = {
   primary: "bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90",
   secondary: "border-2 border-primary-yellow text-white hover:bg-white/10",
