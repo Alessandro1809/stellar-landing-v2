@@ -125,7 +125,7 @@ async function handleSubmit(e: any) {
               <button
                 type="button"
                 class="px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90 focus:outline-none"
-                onclick="document.getElementById('comming-soon-modal').classList.remove('hidden')"
+                onclick="document.getElementById('comming-soon-modal').classList.remove('invisible')"
               >
                 <span>{secondaryButton.text}</span>
                 <!-- Aquí puedes incluir el icono si lo deseas -->
@@ -143,12 +143,12 @@ async function handleSubmit(e: any) {
   <BorderBeam client:idle duration={5} size={400} />
 </div>
 
-<div id="comming-soon-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+<div id="comming-soon-modal" class="invisible fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
   <div class="relative bg-gradient-to-br from-secondary-blue/90 to-primary-yellow/30 border border-primary-cyan/40 rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 animate-fade-in">
-    <button class="absolute top-3 right-3 text-primary-cyan hover:text-primary-yellow text-2xl" type="button" onclick="document.getElementById('comming-soon-modal').classList.add('hidden')" aria-label="Cerrar modal">&times;</button>
+    <button class="absolute top-3 right-3 text-primary-cyan hover:text-primary-yellow text-2xl" type="button" onclick="document.getElementById('comming-soon-modal').classList.add('invisible')" aria-label="Cerrar modal">&times;</button>
     <h3 class="text-2xl font-bold text-primary-yellow mb-2">¡Suscríbete para novedades!</h3>
     <p class="text-gray-200 mb-4">Déjanos tu email y te avisaremos cuando lancemos nuestros nuevos planes.</p>
-    <form id="comming-soon-form" class="flex flex-col gap-4">
+    <form id="comming-soon-form" class="flex flex-col gap-4" onsubmit="return false;">
       <input
         type="email"
         id="comming-soon-email"
@@ -159,7 +159,7 @@ async function handleSubmit(e: any) {
       <div id="comming-soon-error" class="text-red-400 text-sm"></div>
       <button
         type="submit"
-        class="bg-primary-yellow text-theme-deepblue font-bold rounded-full px-4 py-2 hover:bg-primary-yellow/90 transition-colors"
+        class="bg-primary-yellow text-theme-deepblue font-bold rounded-full px-4 py-2 hover:bg-primary-yellow/90 transition-colors hover:cursor-pointer"
       >
         Suscribirme
       </button>
@@ -168,15 +168,16 @@ async function handleSubmit(e: any) {
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  function setupFormHandlers() {
     const form = document.getElementById('comming-soon-form');
     const emailInput = document.getElementById('comming-soon-email');
     const errorDiv = document.getElementById('comming-soon-error');
     const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
 
     if (form && emailInput instanceof HTMLInputElement && errorDiv && submitButton instanceof HTMLButtonElement) {
-      form.onsubmit = async function(e) {
+      form.addEventListener('submit', async function(e) {
         e.preventDefault();
+        e.stopPropagation();
         errorDiv.textContent = '';
         const email = emailInput.value.trim();
 
@@ -195,8 +196,8 @@ async function handleSubmit(e: any) {
           formData.append('nombre', 'Suscriptor Newsletter');
           formData.append('email', email);
           formData.append('empresa', ''); // Campo opcional
-          formData.append('servicio', 'Digital Marketing');
-          formData.append('asunto', 'Suscripción a Digital Marketing Updates');
+          formData.append('servicio', 'Suscripción Newsletter');
+          formData.append('asunto', 'Nuevo cliente Newsletter');
           formData.append('mensaje', 'Me gustaría recibir actualizaciones sobre los nuevos planes de marketing digital.');
 
           const response = await fetch('/api/contact', {
@@ -216,7 +217,7 @@ async function handleSubmit(e: any) {
             `;
             // Cerrar la modal después de 3 segundos
             setTimeout(() => {
-              document.getElementById('comming-soon-modal')?.classList.add('hidden');
+              document.getElementById('comming-soon-modal')?.classList.add('invisible');
             }, 3000);
           } else {
             throw new Error(data.message || 'Error al procesar la solicitud');
@@ -229,7 +230,29 @@ async function handleSubmit(e: any) {
         }
 
         return false;
-      };
+      });
     }
+  }
+
+  // Configurar el observer para detectar cuando el modal se agrega al DOM
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement && node.id === 'comming-soon-modal') {
+            setupFormHandlers();
+          }
+        });
+      }
+    });
   });
+
+  // Observar cambios en el body
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  // Configurar también al cargar la página inicialmente
+  document.addEventListener('astro:page-load', setupFormHandlers);
 </script>
