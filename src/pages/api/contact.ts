@@ -1,13 +1,29 @@
 import type { APIRoute } from 'astro';
 import Mailjet from 'node-mailjet';
 
-const mailjet = Mailjet.apiConnect(
-    import.meta.env.MJ_API_KEY,
-    import.meta.env.MJ_SECRET_KEY
-);
-
 export const POST: APIRoute = async ({ request }) => {
     try {
+        // Verificar que las variables de entorno estén disponibles
+        if (!import.meta.env.MJ_API_KEY || !import.meta.env.MJ_SECRET_KEY) {
+            console.error('Mailjet API keys not found');
+            return new Response(
+                JSON.stringify({
+                    message: 'Error de configuración del servidor'
+                }),
+                { 
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+        }
+
+        const mailjet = Mailjet.apiConnect(
+            import.meta.env.MJ_API_KEY,
+            import.meta.env.MJ_SECRET_KEY
+        );
+
         const formData = await request.formData();
         
         const nombre = formData.get('nombre')?.toString();
