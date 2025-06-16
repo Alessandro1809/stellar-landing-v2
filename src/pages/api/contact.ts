@@ -2,6 +2,8 @@ import type { APIRoute } from 'astro';
 import Mailjet from 'node-mailjet';
 
 export const POST: APIRoute = async ({ request }) => {
+    console.log('Iniciando procesamiento de la solicitud');
+    
     try {
         // Verificar que las variables de entorno estén disponibles
         if (!import.meta.env.MJ_API_KEY || !import.meta.env.MJ_SECRET_KEY) {
@@ -19,11 +21,13 @@ export const POST: APIRoute = async ({ request }) => {
             );
         }
 
+        console.log('API keys encontradas, inicializando Mailjet');
         const mailjet = Mailjet.apiConnect(
             import.meta.env.MJ_API_KEY,
             import.meta.env.MJ_SECRET_KEY
         );
 
+        console.log('Procesando formData');
         const formData = await request.formData();
         
         const nombre = formData.get('nombre')?.toString();
@@ -33,8 +37,11 @@ export const POST: APIRoute = async ({ request }) => {
         const asunto = formData.get('asunto')?.toString();
         const mensaje = formData.get('mensaje')?.toString();
 
+        console.log('Datos recibidos:', { nombre, email, empresa, servicio, asunto });
+
         // Validaciones
         if (!nombre || !email || !servicio || !asunto || !mensaje) {
+            console.log('Validación fallida: campos requeridos faltantes');
             return new Response(
                 JSON.stringify({
                     message: 'Todos los campos requeridos deben estar completos'
@@ -51,6 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
         // Validar email
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
+            console.log('Validación fallida: email inválido');
             return new Response(
                 JSON.stringify({
                     message: 'El formato del email no es válido'
@@ -64,6 +72,7 @@ export const POST: APIRoute = async ({ request }) => {
             );
         }
 
+        console.log('Iniciando envío de email');
         try {
             const response = await mailjet
                 .post("send", { version: 'v3.1' })
@@ -140,6 +149,7 @@ export const POST: APIRoute = async ({ request }) => {
                     ]
                 });
 
+            console.log('Respuesta de Mailjet:', response.response.status);
             if (response.response.status === 200) {
                 return new Response(
                     JSON.stringify({ 
@@ -156,10 +166,11 @@ export const POST: APIRoute = async ({ request }) => {
             
             throw new Error('Error al enviar el email');
         } catch (error) {
-            console.error('Error al enviar email:', error);
+            console.error('Error detallado al enviar email:', error);
             return new Response(
                 JSON.stringify({
-                    message: 'Error al enviar el email'
+                    message: 'Error al enviar el email',
+                    details: error instanceof Error ? error.message : 'Error desconocido'
                 }),
                 { 
                     status: 500,
@@ -170,10 +181,11 @@ export const POST: APIRoute = async ({ request }) => {
             );
         }
     } catch (error) {
-        console.error('Error procesando el formulario:', error);
+        console.error('Error detallado procesando el formulario:', error);
         return new Response(
             JSON.stringify({
-                message: 'Error al procesar el formulario'
+                message: 'Error al procesar el formulario',
+                details: error instanceof Error ? error.message : 'Error desconocido'
             }),
             { 
                 status: 500,
