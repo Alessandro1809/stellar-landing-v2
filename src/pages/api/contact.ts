@@ -18,7 +18,7 @@ export const POST: APIRoute = async ({ request }) => {
         });
       }
   
-      const response = await fetch("https://api.mailjet.com/v3.1/send", {
+      const response = await fetch("https://api.mailjet.com/v3/send", {
         method: "POST",
         headers: {
           Authorization: "Basic " + btoa(`${import.meta.env.MJ_API_KEY}:${import.meta.env.MJ_SECRET_KEY}`),
