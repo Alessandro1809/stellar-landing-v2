@@ -18,10 +18,12 @@ export const POST: APIRoute = async ({ request }) => {
         });
       }
   
+      const auth = btoa(`${import.meta.env.MJ_API_KEY}:${import.meta.env.MJ_SECRET_KEY}`);
+  
       const response = await fetch("https://api.mailjet.com/v3.1/send", {
         method: "POST",
         headers: {
-          Authorization: "Basic " + btoa(`${import.meta.env.MJ_API_KEY}:${import.meta.env.MJ_SECRET_KEY}`),
+          Authorization: `Basic ${auth}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -46,7 +48,15 @@ export const POST: APIRoute = async ({ request }) => {
                 Asunto: ${asunto}
                 Mensaje: ${mensaje}
               `,
-              HTMLPart: `<div style="font-family: Arial, sans-serif;">... (tu HTML aquí) ...</div>`
+              HTMLPart: `<div style="font-family: Arial, sans-serif;">
+                <h2>Nuevo mensaje de contacto</h2>
+                <p><strong>Nombre:</strong> ${nombre}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                ${empresa ? `<p><strong>Empresa:</strong> ${empresa}</p>` : ''}
+                <p><strong>Servicio:</strong> ${servicio}</p>
+                <p><strong>Asunto:</strong> ${asunto}</p>
+                <p><strong>Mensaje:</strong><br/>${mensaje}</p>
+              </div>`
             }
           ]
         })
@@ -72,4 +82,11 @@ export const POST: APIRoute = async ({ request }) => {
         headers: { "Content-Type": "application/json" }
       });
     }
-  }; 
+  };
+  
+  // Tipado opcional de variables de entorno
+  interface Env {
+    MJ_API_KEY: string;
+    MJ_SECRET_KEY: string;
+  }
+  

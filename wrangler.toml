@@ -1,6 +1,12 @@
 name = "stellar-landing-v2"
-compatibility_date = "2024-01-01"
+account_id = "TU_ACCOUNT_ID"
+compatibility_date = "2025-06-01"
 
+[env.production]
+  [env.production.vars]
+  MJ_API_KEY = "806a9bd92448e8b69e26e72c8e088127"
+  MJ_SECRET_KEY = "070fec5872b66fed24f379257546d49c"
+  
 [site]
 bucket = "./dist"
 
