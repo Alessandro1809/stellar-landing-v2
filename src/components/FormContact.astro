@@ -1,5 +1,5 @@
 ---
-import ContactIcon from "@/components/icons/ContactIcon.astro";
+
 import ArrowRight from "@/components/icons/ArrowRight.astro";
 import LottieAnimation from "@/components/ui/LottieAnimation.astro";
 import Toast from "@/components/ui/Toast.astro";
@@ -9,6 +9,9 @@ interface Props {
 }
 
 const { class: className } = Astro.props;
+const serviceID = import.meta.env.SECRET_EMAILJS_SERVICE_ID;
+const templateID = import.meta.env.SECRET_EMAILJS_TEMPLATE_ID;
+const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
 ---
 
 <div id="form-contact" class:list={["w-full p-8 rounded-2xl bg-gradient-to-br from-secondary-blue/5 via-primary-cyan/5 to-primary-cyan/35 backdrop-blur-sm border border-primary-cyan/20 mb-44", className]}>
@@ -26,8 +29,10 @@ const { class: className } = Astro.props;
 
         <form 
             id="contactForm"
+            data-service-id={serviceID}
+            data-template-id={templateID}
+            data-user-id={userID}
             class="space-y-4"
-            onsubmit="return false;"
         >
             <div>
                 <label for="nombre" class="block text-sm font-medium text-gray-300 mb-1">Full Name:</label>
@@ -127,58 +132,56 @@ const { class: className } = Astro.props;
 <Toast />
 
 <script>
-document.addEventListener('astro:page-load', () => {
-    const form = document.getElementById('contactForm') as HTMLFormElement;
-    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-    const servicioSelect = form.querySelector('#servicio') as HTMLSelectElement;
+    // @ts-ignore
+    import emailjs from '@emailjs/browser';
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Validar que se haya seleccionado un servicio válido
-        if (servicioSelect.value === '') {
-            window.showToast('Por favor selecciona un servicio válido', 'error');
-            return;
-        }
-        
-        try {
-            submitButton.disabled = true;
-            window.showToast('Enviando mensaje...', 'success');
+    document.addEventListener('astro:page-load', () => {
+        const form = document.getElementById('contactForm') as HTMLFormElement;
+        const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const servicioSelect = form?.querySelector('#servicio') as HTMLSelectElement;
 
-            const formData = new FormData(form);
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (servicioSelect?.value === '') {
+                    window.showToast('Por favor selecciona un servicio válido', 'error');
+                    return;
+                }
+
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
+                window.showToast('Enviando mensaje...', 'success');
+
+                try {
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData.entries());
+
+                    const serviceID = form.dataset.serviceId;
+                    const templateID = form.dataset.templateId;
+                    const userID = form.dataset.userId;
+
+                    if (!serviceID || !templateID || !userID) {
+                        throw new Error('Faltan credenciales de EmailJS');
+                    }
+
+                    await emailjs.init(userID);
+                    await emailjs.sendForm(serviceID, templateID, form);
+
+                    window.showToast('¡Mensaje enviado correctamente!', 'success');
+                    form.reset();
+                } catch (error) {
+                    console.error('Error al enviar el formulario:', error);
+                    window.showToast('Error al enviar el mensaje. Por favor, intenta de nuevo.', 'error');
+                } finally {
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
                 }
             });
-
-            const responseText = await response.text();
-            let data;
-            
-            try {
-                data = JSON.parse(responseText);
-            } catch (e) {
-                console.error('Error parsing response:', responseText);
-                throw new Error('Error al procesar la respuesta del servidor');
-            }
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Error al enviar el mensaje');
-            }
-
-            window.showToast('¡Mensaje enviado correctamente!', 'success');
-            form.reset();
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            window.showToast(errorMessage, 'error');
-            console.error('Form submission error:', error);
-        } finally {
-            submitButton.disabled = false;
         }
     });
-});
 </script>
 

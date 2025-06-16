@@ -75,6 +75,11 @@ async function handleSubmit(e: any) {
   // Aquí podrías hacer una petición a tu backend o servicio de newsletter
   emailSent = true;
 }
+
+const serviceID = import.meta.env.SECRET_EMAILJS_SERVICE_ID;
+const templateID = import.meta.env.SECRET_EMAILJS_TEMPLATE_ID;
+const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
+
 ---
 
 <div class="relative overflow-hidden w-full rounded-2xl bg-gradient-to-br from-secondary-blue/10 to-primary-yellow/30 backdrop-blur-sm border border-primary-cyan/20 p-12">
@@ -148,10 +153,15 @@ async function handleSubmit(e: any) {
     <button class="absolute top-3 right-3 text-primary-cyan hover:text-primary-yellow text-2xl" type="button" onclick="document.getElementById('comming-soon-modal').classList.add('invisible')" aria-label="Cerrar modal">&times;</button>
     <h3 class="text-2xl font-bold text-primary-yellow mb-2">¡Suscríbete para novedades!</h3>
     <p class="text-gray-200 mb-4">Déjanos tu email y te avisaremos cuando lancemos nuestros nuevos planes.</p>
-    <form id="comming-soon-form" class="flex flex-col gap-4" onsubmit="return false;">
+    <form id="comming-soon-form"
+      data-service-id={serviceID}
+      data-template-id={templateID}
+      data-user-id={userID}
+      class="flex flex-col gap-4">
       <input
         type="email"
         id="comming-soon-email"
+        name="email"
         class="rounded-full px-4 py-2 border border-primary-cyan bg-white/80 text-theme-deepblue focus:outline-none focus:ring-2 focus:ring-primary-yellow transition"
         placeholder="Tu email..."
         required
@@ -168,99 +178,65 @@ async function handleSubmit(e: any) {
 </div>
 
 <script>
-  function setupFormHandlers() {
-    const form = document.getElementById('comming-soon-form');
-    const emailInput = document.getElementById('comming-soon-email');
-    const errorDiv = document.getElementById('comming-soon-error');
-    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+    // @ts-ignore
+    import emailjs from '@emailjs/browser';
 
-    if (form && emailInput instanceof HTMLInputElement && errorDiv && submitButton instanceof HTMLButtonElement) {
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        errorDiv.textContent = '';
-        const email = emailInput.value.trim();
+    document.addEventListener('astro:page-load', () => {
+        const form = document.getElementById('comming-soon-form');
+        const emailInput = document.getElementById('comming-soon-email');
+        const errorDiv = document.getElementById('comming-soon-error');
+        const submitButton = form?.querySelector('button[type="submit"]');
+        const modal = document.getElementById('comming-soon-modal');
 
-        // Validación de email
-        if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-          errorDiv.textContent = 'Por favor ingresa un email válido.';
-          return false;
+        if (form && emailInput && errorDiv && submitButton) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                errorDiv.textContent = '';
+                const email = emailInput.value.trim();
+
+                if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                    errorDiv.textContent = 'Por favor ingresa un email válido.';
+                    return false;
+                }
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+
+                const serviceID = form.dataset.serviceId;
+                const templateID = form.dataset.templateId;
+                const userID = form.dataset.userId;
+
+                if (!serviceID || !templateID || !userID) {
+                    errorDiv.textContent = 'Error de configuración. Por favor, intenta más tarde.';
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Suscribirme';
+                    return false;
+                }
+
+                try {
+                    await emailjs.init(userID);
+                    await emailjs.sendForm(serviceID, templateID, form);
+
+                    form.innerHTML = `
+                        <div class="text-center space-y-4">
+                            <div class="text-primary-cyan font-semibold text-xl">¡Gracias por suscribirte! 🎉</div>
+                            <p class="text-gray-200">Te mantendremos informado sobre nuestros nuevos planes de marketing digital.</p>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        if (modal) {
+                            modal.classList.add('invisible');
+                        }
+                    }, 3000);
+                } catch (error) {
+                    console.error('Error al enviar el formulario:', error);
+                    errorDiv.textContent = 'Error al enviar el formulario. Por favor, intenta de nuevo.';
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Suscribirme';
+                }
+                return false;
+            });
         }
-
-        try {
-          // Deshabilitar el botón mientras se envía
-          submitButton.disabled = true;
-          submitButton.textContent = 'Enviando...';
-
-          const formData = new FormData();
-          formData.append('nombre', 'Suscriptor Newsletter');
-          formData.append('email', email);
-          formData.append('empresa', ''); // Campo opcional
-          formData.append('servicio', 'Suscripción Newsletter');
-          formData.append('asunto', 'Nuevo cliente Newsletter');
-          formData.append('mensaje', 'Me gustaría recibir actualizaciones sobre los nuevos planes de marketing digital.');
-
-          const response = await fetch('/api/contact', {
-            method: 'POST',
-            body: formData
-          });
-
-          const responseText = await response.text();
-          let data;
-          
-          try {
-            data = JSON.parse(responseText);
-          } catch (e) {
-            console.error('Error parsing response:', responseText);
-            throw new Error('Error al procesar la respuesta del servidor');
-          }
-
-          if (response.ok) {
-            // Mostrar mensaje de éxito
-            form.innerHTML = `
-              <div class="text-center space-y-4">
-                <div class="text-primary-cyan font-semibold text-xl">¡Gracias por suscribirte! 🎉</div>
-                <p class="text-gray-200">Te mantendremos informado sobre nuestros nuevos planes de marketing digital.</p>
-              </div>
-            `;
-            // Cerrar la modal después de 3 segundos
-            setTimeout(() => {
-              document.getElementById('comming-soon-modal')?.classList.add('invisible');
-            }, 3000);
-          } else {
-            throw new Error(data.message || 'Error al procesar la solicitud');
-          }
-        } catch (error) {
-          // Mostrar error y rehabilitar el botón
-          errorDiv.textContent = error instanceof Error ? error.message : 'Error al enviar el formulario. Por favor, intenta de nuevo.';
-          submitButton.disabled = false;
-          submitButton.textContent = 'Suscribirme';
-        }
-
-        return false;
-      });
-    }
-  }
-
-  // Configurar el observer para detectar cuando el modal se agrega al DOM
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.addedNodes.length) {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && node.id === 'comming-soon-modal') {
-            setupFormHandlers();
-          }
-        });
-      }
     });
-  });
-
-  // Observar cambios en el body
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
-  // Configurar también al cargar la página inicialmente
-  document.addEventListener('astro:page-load', setupFormHandlers);
 </script>
