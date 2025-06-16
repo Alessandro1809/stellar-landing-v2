@@ -2,6 +2,21 @@ import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async ({ request }) => {
     try {
+      // Verificar variables de entorno
+      if (!import.meta.env.MJ_API_KEY || !import.meta.env.MJ_SECRET_KEY) {
+        console.error('Variables de entorno faltantes:', {
+          MJ_API_KEY: !!import.meta.env.MJ_API_KEY,
+          MJ_SECRET_KEY: !!import.meta.env.MJ_SECRET_KEY
+        });
+        return new Response(JSON.stringify({ 
+          message: "Error de configuración del servidor",
+          details: "Variables de entorno no configuradas"
+        }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
       const formData = await request.formData();
   
       const nombre = formData.get('nombre')?.toString();
@@ -20,6 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
   
       const auth = btoa(`${import.meta.env.MJ_API_KEY}:${import.meta.env.MJ_SECRET_KEY}`);
   
+      console.log('Enviando email a Mailjet...');
       const response = await fetch("https://api.mailjet.com/v3.1/send", {
         method: "POST",
         headers: {
@@ -63,21 +79,30 @@ export const POST: APIRoute = async ({ request }) => {
       });
   
       if (response.ok) {
+        console.log('Email enviado correctamente');
         return new Response(JSON.stringify({ message: "Mensaje enviado correctamente" }), {
           status: 200,
           headers: { "Content-Type": "application/json" }
         });
       } else {
         const errorData = await response.json();
-        console.error("Error al enviar:", errorData);
-        return new Response(JSON.stringify({ message: "Error al enviar email", details: errorData }), {
+        console.error("Error al enviar email:", errorData);
+        return new Response(JSON.stringify({ 
+          message: "Error al enviar email", 
+          details: errorData,
+          status: response.status
+        }), {
           status: 500,
           headers: { "Content-Type": "application/json" }
         });
       }
     } catch (error) {
       console.error("Error inesperado:", error);
-      return new Response(JSON.stringify({ message: "Error del servidor", details: String(error) }), {
+      return new Response(JSON.stringify({ 
+        message: "Error del servidor", 
+        details: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      }), {
         status: 500,
         headers: { "Content-Type": "application/json" }
       });
