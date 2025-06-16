@@ -200,7 +200,7 @@ async function handleSubmit(e: any) {
           formData.append('asunto', 'Nuevo cliente Newsletter');
           formData.append('mensaje', 'Me gustaría recibir actualizaciones sobre los nuevos planes de marketing digital.');
 
-          const response = await fetch('/functions/contact', {
+          const response = await fetch('/api/contact', {
             method: 'POST',
             body: formData
           });
