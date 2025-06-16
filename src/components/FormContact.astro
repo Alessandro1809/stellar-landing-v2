@@ -147,7 +147,7 @@ document.addEventListener('astro:page-load', () => {
             window.showToast('Enviando mensaje...', 'success');
 
             const formData = new FormData(form);
-            const response = await fetch('/api/contact', {
+            const response = await fetch('/functions/contact', {
                 method: 'POST',
                 body: formData,
                 headers: {
