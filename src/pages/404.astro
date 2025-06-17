@@ -1,0 +1,69 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Particles } from "@/components/shadcn/Particles";
+import { BorderBeam } from "@/components/shadcn/BorderBeam";
+import Button from "@/components/ui/Button.astro";
+---
+
+<Layout title="404 - Página no encontrada">
+    <main class="relative h-screen w-full">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-secondary-blue via-primary-cyan/20 to-primary-yellow/10 opacity-30"></div>
+            <Particles client:idle
+                className="absolute inset-0"
+                quantity={100}
+                ease={80}
+                color="#F2FF41"
+                refresh
+            />
+        </div>
+
+        <div class="relative z-10 flex items-center justify-center px-4 h-full">
+            <div class="w-full max-w-2xl mx-auto">
+                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-secondary-blue/80 to-primary-cyan/70 backdrop-blur-sm border border-primary-cyan/20 p-8 md:p-12 text-center">
+                    <BorderBeam client:idle duration={5} size={300} />
+                    
+                    <h1 class="text-7xl md:text-8xl font-bold text-primary-cyan mb-6">404</h1>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">¡Oops! Página no encontrada</h2>
+                    <p class="text-gray-300 mb-8">
+                        Lo sentimos, pero la página que estás buscando parece haberse perdido en el espacio digital.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <Button 
+                            href="/"
+                            class="bg-primary-cyan text-secondary-blue hover:bg-primary-cyan/80"
+                        >
+                            Volver al Inicio
+                        </Button>
+                        <Button 
+                            href="/Contact"
+                            class="bg-primary-yellow text-secondary-blue hover:bg-primary-yellow/80"
+                        >
+                            Contactar Soporte
+                        </Button>
+                    </div>
+
+                    <div class="mt-8 text-gray-400">
+                        <p>¿Necesitas ayuda? Contáctanos en</p>
+                        <a href="mailto:stellarteamcr@gmail.com" class="text-primary-cyan hover:text-primary-yellow transition-colors">
+                            stellarteamcr@gmail.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .float {
+        animation: float 6s ease-in-out infinite;
+    }
+</style> 
