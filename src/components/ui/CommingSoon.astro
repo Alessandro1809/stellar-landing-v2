@@ -76,9 +76,9 @@ async function handleSubmit(e: any) {
   emailSent = true;
 }
 
-const serviceID = import.meta.env.SECRET_EMAILJS_SERVICE_ID;
-const templateID = import.meta.env.SECRET_EMAILJS_TEMPLATE_ID;
-const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
+const serviceID = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
+const templateID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
+const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
 
 ---
 
@@ -154,9 +154,6 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
     <h3 class="text-2xl font-bold text-primary-yellow mb-2">¡Suscríbete para novedades!</h3>
     <p class="text-gray-200 mb-4">Déjanos tu email y te avisaremos cuando lancemos nuestros nuevos planes.</p>
     <form id="comming-soon-form"
-      data-service-id={serviceID}
-      data-template-id={templateID}
-      data-user-id={userID}
       class="flex flex-col gap-4">
       <input
         type="email"
@@ -177,16 +174,34 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
   </div>
 </div>
 
-<script>
-    // @ts-ignore
-    import emailjs from '@emailjs/browser';
+<script is:inline define:vars={{ serviceID, templateID, publicKey }}>
+    // Verificar que las variables estén disponibles
+    console.log('Variables EmailJS Newsletter:', { 
+        serviceID, 
+        templateID, 
+        publicKey: publicKey ? publicKey.substring(0, 5) + '...' : 'no definido'
+    });
+
+    // Inicializar EmailJS
+    window.onload = function() {
+        try {
+            emailjs.init(publicKey);
+            console.log('EmailJS Newsletter inicializado correctamente');
+        } catch (error) {
+            console.error('Error al inicializar EmailJS Newsletter:', error);
+        }
+    }
 
     document.addEventListener('astro:page-load', () => {
-        const form = document.getElementById('comming-soon-form') as HTMLFormElement;
-        const emailInput = document.getElementById('comming-soon-email') as HTMLInputElement;
+        const form = document.getElementById('comming-soon-form');
+        const emailInput = document.getElementById('comming-soon-email');
         const errorDiv = document.getElementById('comming-soon-error');
-        const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const submitButton = form?.querySelector('button[type="submit"]');
         const modal = document.getElementById('comming-soon-modal');
+
+        if (!(form instanceof HTMLFormElement)) return;
+        if (!(emailInput instanceof HTMLInputElement)) return;
+        if (!(submitButton instanceof HTMLButtonElement)) return;
 
         if (form && emailInput && errorDiv && submitButton) {
             form.addEventListener('submit', async function(e) {
@@ -203,11 +218,7 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
                 submitButton.disabled = true;
                 submitButton.textContent = 'Enviando...';
 
-                const serviceID = form.dataset.serviceId;
-                const templateID = form.dataset.templateId;
-                const userID = form.dataset.userId;
-
-                if (!serviceID || !templateID || !userID) {
+                if (!serviceID || !templateID || !publicKey) {
                     errorDiv.textContent = 'Error de configuración. Por favor, intenta más tarde.';
                     submitButton.disabled = false;
                     submitButton.textContent = 'Suscribirme';
@@ -215,8 +226,11 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
                 }
 
                 try {
-                    await emailjs.init(userID);
-                    await emailjs.sendForm(serviceID, templateID, form);
+                    // Reinicializar EmailJS antes de enviar
+                    emailjs.init(publicKey);
+                    
+                    const response = await emailjs.sendForm(serviceID, templateID, form);
+                    console.log('Respuesta EmailJS Newsletter:', response);
 
                     form.innerHTML = `
                         <div class="text-center space-y-4">
@@ -240,3 +254,5 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
         }
     });
 </script>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>

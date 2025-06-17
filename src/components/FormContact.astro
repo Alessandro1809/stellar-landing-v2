@@ -9,9 +9,9 @@ interface Props {
 }
 
 const { class: className } = Astro.props;
-const serviceID = import.meta.env.SECRET_EMAILJS_SERVICE_ID;
-const templateID = import.meta.env.SECRET_EMAILJS_TEMPLATE_ID;
-const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
+const serviceID = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
+const templateID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
+const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
 ---
 
 <div id="form-contact" class:list={["w-full p-8 rounded-2xl bg-gradient-to-br from-secondary-blue/5 via-primary-cyan/5 to-primary-cyan/35 backdrop-blur-sm border border-primary-cyan/20 mb-44", className]}>
@@ -29,9 +29,6 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
 
         <form 
             id="contactForm"
-            data-service-id={serviceID}
-            data-template-id={templateID}
-            data-user-id={userID}
             class="space-y-4"
         >
             <div>
@@ -131,57 +128,66 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
 
 <Toast />
 
-<script>
-    // @ts-ignore
-    import emailjs from '@emailjs/browser';
+<script is:inline define:vars={{ serviceID, templateID, publicKey }}>
+    // Verificar que las variables estén disponibles
+    console.log('Variables EmailJS:', { 
+        serviceID, 
+        templateID, 
+        publicKey: publicKey ? publicKey.substring(0, 5) + '...' : 'no definido'
+    });
+
+    // Inicializar EmailJS
+    window.onload = function() {
+        try {
+            emailjs.init(publicKey);
+            console.log('EmailJS inicializado correctamente');
+        } catch (error) {
+            console.error('Error al inicializar EmailJS:', error);
+        }
+    }
 
     document.addEventListener('astro:page-load', () => {
-        const form = document.getElementById('contactForm') as HTMLFormElement;
-        const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
-        const servicioSelect = form?.querySelector('#servicio') as HTMLSelectElement;
+        const form = document.getElementById('contactForm');
+        const submitButton = form?.querySelector('button[type="submit"]');
+        const servicioSelect = form?.querySelector('#servicio');
 
-        if (form) {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+        if (!(form instanceof HTMLFormElement)) return;
+        if (!(submitButton instanceof HTMLButtonElement)) return;
+        if (!(servicioSelect instanceof HTMLSelectElement)) return;
 
-                if (servicioSelect?.value === '') {
-                    window.showToast('Por favor selecciona un servicio válido', 'error');
-                    return;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (servicioSelect?.value === '') {
+                window.showToast('Por favor selecciona un servicio válido', 'error');
+                return;
+            }
+
+            submitButton.disabled = true;
+            window.showToast('Enviando mensaje...', 'success');
+
+            try {
+                if (!serviceID || !templateID || !publicKey) {
+                    throw new Error('Faltan credenciales de EmailJS');
                 }
 
-                if (submitButton) {
-                    submitButton.disabled = true;
-                }
-                window.showToast('Enviando mensaje...', 'success');
-
-                try {
-                    const formData = new FormData(form);
-                    const data = Object.fromEntries(formData.entries());
-
-                    const serviceID = form.dataset.serviceId;
-                    const templateID = form.dataset.templateId;
-                    const userID = form.dataset.userId;
-
-                    if (!serviceID || !templateID || !userID) {
-                        throw new Error('Faltan credenciales de EmailJS');
-                    }
-
-                    await emailjs.init(userID);
-                    await emailjs.sendForm(serviceID, templateID, form);
-
-                    window.showToast('¡Mensaje enviado correctamente!', 'success');
-                    form.reset();
-                } catch (error) {
-                    console.error('Error al enviar el formulario:', error);
-                    window.showToast('Error al enviar el mensaje. Por favor, intenta de nuevo.', 'error');
-                } finally {
-                    if (submitButton) {
-                        submitButton.disabled = false;
-                    }
-                }
-            });
-        }
+                // Reinicializar EmailJS antes de enviar
+                emailjs.init(publicKey);
+                
+                const response = await emailjs.sendForm(serviceID, templateID, form);
+                console.log('Respuesta EmailJS:', response);
+                window.showToast('¡Mensaje enviado correctamente!', 'success');
+                form.reset();
+            } catch (error) {
+                console.error('Error al enviar el formulario:', error);
+                window.showToast('Error al enviar el mensaje. Por favor, intenta de nuevo.', 'error');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
     });
 </script>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
