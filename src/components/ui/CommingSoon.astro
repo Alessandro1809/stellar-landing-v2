@@ -1,9 +1,6 @@
 ---
-
 import { Particles } from "@/components/shadcn/Particles";
 import { BorderBeam } from "@/components/shadcn/BorderBeam";
-import Button from "@/components/ui/Button.astro";
-
 
 interface Props {
     title?: {
@@ -239,7 +236,10 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
                     
                     const response = await emailjs.send(serviceID, templateID, {
                         from_email: email,
-                        subscription_type: 'newsletter',
+                        from_name: 'Interesado en el newsletter',
+                        company: 'No aplica',
+                        service: 'newsletter',
+                        subject: 'No aplica',
                         message: 'Suscripción al newsletter de marketing digital'
                     });
 
