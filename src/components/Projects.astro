@@ -31,6 +31,7 @@ const {
 } = Astro.props;
 
 const comingSoonProject: Project = {
+    href: "/Contact",
     title: "Next Project",
     image: "" as unknown as ImageMetadata,
     imageAlt: "Coming Soon",
@@ -54,6 +55,7 @@ const allProjects = [...projects, comingSoonProject];
         )}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             {allProjects.map((project) => (
+                <a href={project.href} target="_blank">
                 <div class="group relative overflow-hidden rounded-xl bg-secondary-blue/10 border-2 border-primary-cyan/20 transition-all duration-300 hover:border-primary-cyan/50">
                     <h3 class="absolute top-0 left-0 w-full p-4 text-xl text-primary-cyan font-bold z-10">
                         {project.title}
@@ -79,7 +81,7 @@ const allProjects = [...projects, comingSoonProject];
                             />
                         </div>
                     )}
-                    <div class="p-4 bg-primary-cyan">
+                    <div class="p-2 bg-primary-cyan">
                         <div class="flex flex-wrap gap-2">
                             {project.tags.map((tag) => (
                                 <span class="px-3 py-1 text-sm rounded-full border-2 border-secondary-blue text-secondary-blue">
@@ -89,6 +91,7 @@ const allProjects = [...projects, comingSoonProject];
                         </div>
                     </div>
                 </div>
+            </a>
             ))}
         </div>
 
