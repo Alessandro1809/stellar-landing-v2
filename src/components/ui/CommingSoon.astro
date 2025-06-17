@@ -1,6 +1,7 @@
 ---
 import { Particles } from "@/components/shadcn/Particles";
 import { BorderBeam } from "@/components/shadcn/BorderBeam";
+import ArrowRight from "@/components/icons/ArrowRight.astro";
 
 interface Props {
     title?: {
@@ -126,11 +127,13 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
             <div class="flex gap-2">
               <button
                 type="button"
-                class="px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 bg-primary-yellow text-theme-deepblue hover:bg-primary-yellow/90 focus:outline-none"
+                class="px-6 py-3 font-semibold rounded-full transition-colors group flex justify-center items-center gap-2 bg-primary-yellow text-theme-deepblue group hover:bg-primary-yellow/90 focus:outline-none hover:cursor-pointer"
                 onclick="document.getElementById('comming-soon-modal').classList.remove('invisible')"
               >
                 <span>{secondaryButton.text}</span>
-                <!-- Aquí puedes incluir el icono si lo deseas -->
+                <span class="transition-transform group-hover:translate-x-1">
+                  <ArrowRight />
+                </span>
               </button>
             </div>
         </div>
