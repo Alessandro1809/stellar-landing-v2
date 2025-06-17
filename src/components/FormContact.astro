@@ -128,6 +128,8 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
 
 <Toast />
 
+<script is:inline src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 <script is:inline define:vars={{ serviceID, templateID, publicKey }}>
     // Verificar que las variables estén disponibles
     console.log('Variables EmailJS:', { 
@@ -136,8 +138,7 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
         publicKey: publicKey ? publicKey.substring(0, 5) + '...' : 'no definido'
     });
 
-    // Inicializar EmailJS
-    window.onload = function() {
+    function initEmailJS() {
         try {
             emailjs.init(publicKey);
             console.log('EmailJS inicializado correctamente');
@@ -145,6 +146,13 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
             console.error('Error al inicializar EmailJS:', error);
         }
     }
+
+    // Inicializar cuando el script se carga
+    initEmailJS();
+
+    // Reinicializar cuando la página se carga
+    window.addEventListener('load', initEmailJS);
+    document.addEventListener('astro:page-load', initEmailJS);
 
     document.addEventListener('astro:page-load', () => {
         const form = document.getElementById('contactForm');
@@ -172,10 +180,18 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
                     throw new Error('Faltan credenciales de EmailJS');
                 }
 
-                // Reinicializar EmailJS antes de enviar
-                emailjs.init(publicKey);
+                // Asegurarnos de que EmailJS esté inicializado
+                initEmailJS();
                 
-                const response = await emailjs.sendForm(serviceID, templateID, form);
+                const response = await emailjs.send(serviceID, templateID, {
+                    from_name: form.querySelector('[name="nombre"]').value,
+                    from_email: form.querySelector('[name="email"]').value,
+                    company: form.querySelector('[name="empresa"]').value,
+                    service: form.querySelector('[name="servicio"]').value,
+                    subject: form.querySelector('[name="asunto"]').value,
+                    message: form.querySelector('[name="mensaje"]').value,
+                });
+
                 console.log('Respuesta EmailJS:', response);
                 window.showToast('¡Mensaje enviado correctamente!', 'success');
                 form.reset();
@@ -188,6 +204,4 @@ const publicKey = import.meta.env.PUBLIC_EMAILJS_KEY;
         });
     });
 </script>
-
-<script is:inline src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
