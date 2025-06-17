@@ -182,10 +182,10 @@ const userID = import.meta.env.SECRET_EMAILJS_USER_ID;
     import emailjs from '@emailjs/browser';
 
     document.addEventListener('astro:page-load', () => {
-        const form = document.getElementById('comming-soon-form');
-        const emailInput = document.getElementById('comming-soon-email');
+        const form = document.getElementById('comming-soon-form') as HTMLFormElement;
+        const emailInput = document.getElementById('comming-soon-email') as HTMLInputElement;
         const errorDiv = document.getElementById('comming-soon-error');
-        const submitButton = form?.querySelector('button[type="submit"]');
+        const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
         const modal = document.getElementById('comming-soon-modal');
 
         if (form && emailInput && errorDiv && submitButton) {
